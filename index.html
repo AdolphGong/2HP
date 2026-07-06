@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2HP - Double-Hop Proxy Kit</title>
+  <meta name="description" content="A visual guide for building a Hysteria2 and SOCKS5 double-hop proxy chain with Clash/Mihomo templates.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f2;
+      --band: #ffffff;
+      --ink: #111827;
+      --muted: #5a6472;
+      --line: #d8ded2;
+      --deep: #182433;
+      --teal: #0f6b7a;
+      --green: #2f7d5c;
+      --amber: #c7791b;
+      --red: #a33b43;
+      --blue: #315f9e;
+      --shadow: 0 20px 55px rgba(24, 36, 51, 0.12);
+      --radius: 8px;
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -60px;
+      z-index: 20;
+      padding: 10px 14px;
+      background: var(--deep);
+      color: #fff;
+      border-radius: 6px;
+      transition: top 160ms ease;
+    }
+
+    .skip-link:focus { top: 16px; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(246, 247, 242, 0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(216, 222, 210, 0.9);
+    }
+
+    .nav {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      background: var(--deep);
+      color: #fff;
+      border-radius: 7px;
+      font-weight: 820;
+      font-size: 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a,
+    .button-link {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 680;
+      color: var(--deep);
+    }
+
+    .nav-links a:hover,
+    .button-link:hover { background: rgba(15, 107, 122, 0.1); }
+
+    .button-link.primary {
+      background: var(--deep);
+      color: #fff;
+    }
+
+    .button-link.primary:hover { background: #243449; }
+
+    .hero {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 70px 0 42px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+      gap: 52px;
+      align-items: center;
+    }
+
+    .hero > *,
+    .section-head > *,
+    .security-grid > * { min-width: 0; }
+
+    .hero h1 {
+      margin: 0;
+      max-width: 680px;
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: 0.95;
+      letter-spacing: 0;
+      color: var(--deep);
+    }
+
+    .hero-copy {
+      margin: 24px 0 0;
+      max-width: 620px;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta-grid {
+      margin-top: 42px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      max-width: 680px;
+    }
+
+    .meta-item {
+      border-top: 2px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .meta-item strong {
+      display: block;
+      color: var(--deep);
+      font-size: 14px;
+    }
+
+    .meta-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .diagram-panel {
+      background: var(--band);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .panel-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .signal {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .signal::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(47, 125, 92, 0.12);
+    }
+
+    .route-map {
+      min-height: 380px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      position: relative;
+    }
+
+    .route-card {
+      position: relative;
+      min-height: 154px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: #fbfcf8;
+      overflow: hidden;
+    }
+
+    .route-card::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 0;
+      height: 4px;
+      background: var(--accent, var(--teal));
+    }
+
+    .route-card small {
+      display: block;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .route-card h2 {
+      margin: 10px 0 8px;
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: 0;
+      color: var(--deep);
+    }
+
+    .route-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .route-card.local { --accent: var(--blue); }
+    .route-card.first { --accent: var(--teal); }
+    .route-card.policy { --accent: var(--amber); }
+    .route-card.exit { --accent: var(--green); }
+
+    .route-line {
+      position: absolute;
+      inset: 64px 45px 84px;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .route-line path {
+      fill: none;
+      stroke: var(--deep);
+      stroke-width: 2.2;
+      stroke-dasharray: 10 10;
+      animation: dash 3.6s linear infinite;
+    }
+
+    .route-line circle { fill: var(--amber); }
+
+    @keyframes dash {
+      to { stroke-dashoffset: -80; }
+    }
+
+    section {
+      padding: 72px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.55fr) minmax(0, 0.45fr);
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1.02;
+      letter-spacing: 0;
+      color: var(--deep);
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .info-card,
+    .file-card {
+      background: var(--band);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .info-card h3,
+    .file-card h3 {
+      margin: 0 0 12px;
+      color: var(--deep);
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .info-card p,
+    .file-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+    }
+
+    .policy-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--band);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: table;
+    }
+
+    .policy-table th,
+    .policy-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .policy-table th {
+      color: var(--deep);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      background: #edf2ec;
+    }
+
+    .policy-table td {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .policy-table tr:last-child td { border-bottom: 0; }
+
+    .route-chip {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 5px;
+      color: #fff;
+      background: var(--deep);
+      font-size: 12px;
+      font-weight: 780;
+      white-space: nowrap;
+    }
+
+    .route-chip.ai { background: var(--green); }
+    .route-chip.media { background: var(--blue); }
+    .route-chip.direct { background: var(--amber); color: #111827; }
+    .route-chip.block { background: var(--red); }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
+      border: 1px solid var(--line);
+      background: var(--band);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .step {
+      min-height: 180px;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+    }
+
+    .step:last-child { border-right: 0; }
+
+    .step-number {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: var(--deep);
+      color: #fff;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .step h3 {
+      margin: 18px 0 8px;
+      font-size: 17px;
+      color: var(--deep);
+      line-height: 1.25;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .security-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .security-panel {
+      background: var(--deep);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .security-panel h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .security-panel p {
+      margin: 18px 0 0;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .check-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .check-list li {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      background: var(--band);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .check-list svg {
+      margin-top: 1px;
+      color: var(--green);
+    }
+
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .file-card {
+      min-height: 178px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .file-card code {
+      display: inline-block;
+      color: var(--teal);
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(15, 107, 122, 0.35);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .section-head,
+      .security-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero { padding-top: 46px; }
+      .route-map { min-height: auto; }
+      .route-line { display: none; }
+      .grid-3,
+      .file-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .timeline { grid-template-columns: 1fr; }
+      .step { border-right: 0; border-bottom: 1px solid var(--line); min-height: auto; }
+      .step:last-child { border-bottom: 0; }
+    }
+
+    @media (max-width: 680px) {
+      .nav, .hero, .section-inner, .footer-inner { width: 100%; max-width: 390px; margin-left: 0; margin-right: auto; padding-left: 16px; padding-right: 16px; }
+      .nav { align-items: flex-start; padding-top: 14px; padding-bottom: 14px; flex-direction: column; }
+      .nav-links { justify-content: flex-start; }
+      .hero { grid-template-columns: 1fr; gap: 32px; }
+      .diagram-panel { width: 100%; max-width: 100%; }
+      .hero h1 { font-size: 34px; line-height: 1.06; overflow-wrap: anywhere; }
+      .hero-copy { font-size: 16px; overflow-wrap: anywhere; word-break: break-word; }
+      .hero-actions { display: grid; grid-template-columns: 1fr; }
+      .hero-actions .button-link { width: 100%; }
+      .panel-topline { align-items: flex-start; flex-direction: column; }
+      .diagram-panel, .route-card { min-width: 0; }
+      .route-card p { overflow-wrap: anywhere; word-break: break-word; }
+      .meta-grid,
+      .route-map,
+      .grid-3,
+      .file-grid { grid-template-columns: 1fr; }
+      .diagram-panel { padding: 16px; }
+      section { padding: 52px 0; }
+      .policy-table { display: block; overflow-x: auto; white-space: nowrap; }
+      .policy-table td { white-space: normal; min-width: 180px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="2HP home">
+        <span class="brand-mark">2HP</span>
+        <span>Two-Hop Proxy Kit</span>
+      </a>
+      <div class="nav-links" aria-label="Page sections">
+        <a href="#architecture">Architecture</a>
+        <a href="#policy">Policy</a>
+        <a href="#security">Security</a>
+        <a class="button-link primary" href="https://github.com/AdolphGong/2HP" rel="noreferrer">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div id="top" class="hero">
+      <div>
+        <h1>2HP visualizes a safe double-hop proxy kit.</h1>
+        <p class="hero-copy">A public, placeholder-based guide for Clash and Mihomo clients, a Hysteria2 first hop, and a SOCKS5 exit hop. Built for GitHub Pages, with operational secrets kept out of the shared repository.</p>
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="button-link primary" href="双跳链路搭建分享文档.md">Read the guide</a>
+          <a class="button-link" href="examples/clash-verge.template.yaml">Desktop template</a>
+          <a class="button-link" href="examples/clash-android.template.yaml">Android template</a>
+        </div>
+        <div class="meta-grid" aria-label="Project summary">
+          <div class="meta-item"><strong>Protocol</strong><span>Hysteria2 over UDP</span></div>
+          <div class="meta-item"><strong>Router</strong><span>sing-box policy rules</span></div>
+          <div class="meta-item"><strong>Client</strong><span>Clash / Mihomo templates</span></div>
+        </div>
+      </div>
+
+      <aside class="diagram-panel" id="architecture" aria-label="Double-hop route diagram">
+        <div class="panel-topline">
+          <span>route.visual</span>
+          <span class="signal">placeholder-safe</span>
+        </div>
+        <div class="route-map">
+          <svg class="route-line" viewBox="0 0 420 260" aria-hidden="true">
+            <path d="M 36 58 C 124 28, 194 28, 264 58 S 366 122, 382 188" />
+            <circle cx="36" cy="58" r="5" />
+            <circle cx="264" cy="58" r="5" />
+            <circle cx="382" cy="188" r="5" />
+          </svg>
+          <article class="route-card local">
+            <small>LOCAL CLIENT</small>
+            <h2>Clash / Mihomo</h2>
+            <p>Rule mode separates AI, developer, media, and ordinary traffic before it leaves the machine.</p>
+          </article>
+          <article class="route-card first">
+            <small>FIRST HOP</small>
+            <h2>Hysteria2 VPS</h2>
+            <p>The nearby entry node handles UDP access, TLS, and the first layer of route policy.</p>
+          </article>
+          <article class="route-card policy">
+            <small>ROUTE POLICY</small>
+            <h2>sing-box rules</h2>
+            <p>Selected domains continue to the exit hop; ordinary unmatched traffic can use direct fallback.</p>
+          </article>
+          <article class="route-card exit">
+            <small>EXIT HOP</small>
+            <h2>SOCKS5 egress</h2>
+            <p>The final hop controls the target-region address while staying hidden behind placeholders.</p>
+          </article>
+        </div>
+      </aside>
+    </div>
+
+    <section aria-labelledby="why-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 id="why-title">What the public repo should explain</h2>
+          <p>The useful part is not a private server dump. It is the repeatable pattern: choose hops, lock sensitive routes, keep templates placeholder-only, and verify the result.</p>
+        </div>
+        <div class="grid-3">
+          <article class="info-card">
+            <h3>Topology</h3>
+            <p>Show how local rules, the first hop, the policy router, and the exit hop work together.</p>
+            <a class="tagline" href="#architecture">View diagram</a>
+          </article>
+          <article class="info-card">
+            <h3>Templates</h3>
+            <p>Provide importable Clash/Mihomo examples that use placeholders instead of real endpoints.</p>
+            <a class="tagline" href="#files">Open files</a>
+          </article>
+          <article class="info-card">
+            <h3>Safety</h3>
+            <p>Make it obvious which files are shareable and which files must stay local or encrypted.</p>
+            <a class="tagline" href="#security">Run checklist</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="policy" aria-labelledby="policy-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 id="policy-title">Traffic policy at a glance</h2>
+          <p>A double-hop chain is most useful when each traffic class has a clear destination and failure mode.</p>
+        </div>
+        <table class="policy-table">
+          <thead>
+            <tr>
+              <th scope="col">Traffic class</th>
+              <th scope="col">Route</th>
+              <th scope="col">Rule intent</th>
+              <th scope="col">Failure behavior</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>AI and API domains</td>
+              <td><span class="route-chip ai">DOUBLE HOP</span></td>
+              <td>Pin sensitive target domains to the controlled exit region.</td>
+              <td><span class="route-chip block">FAIL CLOSED</span></td>
+            </tr>
+            <tr>
+              <td>Developer tooling</td>
+              <td><span class="route-chip ai">DOUBLE HOP</span></td>
+              <td>Keep coding assistants and package/dev surfaces on the same controlled path.</td>
+              <td><span class="route-chip block">FAIL CLOSED</span></td>
+            </tr>
+            <tr>
+              <td>Media traffic</td>
+              <td><span class="route-chip media">LOCAL UPSTREAM</span></td>
+              <td>Avoid burning the double-hop exit for high-volume streaming.</td>
+              <td>Use a separate client or bypass.</td>
+            </tr>
+            <tr>
+              <td>Ordinary unmatched traffic</td>
+              <td><span class="route-chip direct">DIRECT</span></td>
+              <td>Keep daily browsing resilient when the proxy chain is degraded.</td>
+              <td>Direct fallback.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="flow-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 id="flow-title">Setup flow</h2>
+          <p>Use the guide as a controlled sequence instead of copying a private configuration wholesale.</p>
+        </div>
+        <div class="timeline">
+          <article class="step">
+            <div class="step-number">1</div>
+            <h3>Pick the hops</h3>
+            <p>Choose a nearby UDP-stable first hop and a target-region SOCKS5 exit.</p>
+          </article>
+          <article class="step">
+            <div class="step-number">2</div>
+            <h3>Install sing-box</h3>
+            <p>Run Hysteria2 inbound on the first hop and SOCKS5 outbound policy.</p>
+          </article>
+          <article class="step">
+            <div class="step-number">3</div>
+            <h3>Lock rules</h3>
+            <p>Put sensitive domains before broad fallback rules and avoid DIRECT in fail-closed groups.</p>
+          </article>
+          <article class="step">
+            <div class="step-number">4</div>
+            <h3>Import templates</h3>
+            <p>Replace placeholders locally, then import the desktop or Android YAML.</p>
+          </article>
+          <article class="step">
+            <div class="step-number">5</div>
+            <h3>Verify route</h3>
+            <p>Check response headers, client logs, and first-hop logs before trusting the path.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="security" aria-labelledby="security-title">
+      <div class="section-inner security-grid">
+        <div class="security-panel">
+          <h2 id="security-title">Share the pattern, never the live credentials.</h2>
+          <p>2HP is designed as a public documentation repository. Anything that can connect to your actual infrastructure belongs outside Git or in encrypted storage.</p>
+        </div>
+        <ul class="check-list" aria-label="Security checklist">
+          <li>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
+            <span>Keep operational notes, real YAML files, SSH users, and passwords ignored by Git.</span>
+          </li>
+          <li>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
+            <span>Use placeholders such as <code>&lt;FIRST_IP&gt;</code>, <code>&lt;HY2_PASSWORD&gt;</code>, and <code>&lt;SOCKS_PASS&gt;</code> in public files.</span>
+          </li>
+          <li>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
+            <span>Scan staged content before publishing, not only the working directory.</span>
+          </li>
+          <li>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
+            <span>Rotate any credential that has ever reached a public remote, even briefly.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="files" aria-labelledby="files-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 id="files-title">Repository map</h2>
+          <p>The public repo stays small on purpose: a visual page, a guide, share rules, and import templates.</p>
+        </div>
+        <div class="file-grid">
+          <article class="file-card">
+            <div>
+              <h3>Visual page</h3>
+              <p>GitHub Pages entry with the architecture and checklist.</p>
+            </div>
+            <code>index.html</code>
+          </article>
+          <article class="file-card">
+            <div>
+              <h3>Guide</h3>
+              <p>Step-by-step setup with placeholders and generic examples.</p>
+            </div>
+            <code>双跳链路搭建分享文档.md</code>
+          </article>
+          <article class="file-card">
+            <div>
+              <h3>Templates</h3>
+              <p>Desktop and Android Clash/Mihomo YAML starters.</p>
+            </div>
+            <code>examples/*.yaml</code>
+          </article>
+          <article class="file-card">
+            <div>
+              <h3>Sharing rules</h3>
+              <p>Clear boundaries for public, private, and sanitized files.</p>
+            </div>
+            <code>SHARING.md</code>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>2HP - Double-Hop Proxy Kit</span>
+      <span>Use responsibly and follow local laws, provider policies, and service terms.</span>
+    </div>
+  </footer>
+</body>
+</html>

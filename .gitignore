@@ -1,0 +1,38 @@
+# Local/private operational material
+运维文档.md
+链式代理项目记录.md
+双跳VPN使用手册.md
+VPN首段/
+
+# Local agent/tool settings
+.claude/
+.agents/
+.codex/
+*.local.json
+
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+*.ppk
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
