@@ -257,7 +257,49 @@
     .doc-tab[aria-selected="true"] { border-color: var(--deep); background: var(--deep); color: #fff; }
     .doc-panel { padding: 0; border-top: 0; }
     .doc-panel[hidden] { display: none; }
-    .doc-panel > h1 { margin-top: 0; }
+    .doc-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .doc-title-main { min-width: 0; }
+    .doc-download-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      gap: 8px;
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid var(--deep);
+      border-radius: 6px;
+      background: var(--deep);
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 780;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .doc-download-button:hover { background: #24334a; border-color: #24334a; }
+    .doc-download-button svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .doc-download-bottom {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 44px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
     .markdown-body {
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -394,6 +436,8 @@
       .markdown-body h1 { font-size: 32px; }
       .markdown-body h2 { font-size: 25px; }
       .markdown-body h3 { font-size: 20px; }
+      .doc-title-row { flex-direction: column; align-items: flex-start; }
+      .doc-download-bottom { justify-content: flex-start; }
       main, section { scroll-margin-top: 180px; }
       section { padding: 50px 0; }
     }
@@ -448,8 +492,14 @@
               <button class="doc-tab" type="button" role="tab" aria-selected="false" aria-controls="doc-panel-android" data-doc-tab="android" data-i18n="aux-android">Android/iOS配置模板</button>
             </nav>
             <section class="doc-panel active" id="doc-panel-source" data-doc-panel="source" role="tabpanel">
-            <span class="doc-eyebrow" data-i18n="aux-md">搭建教程</span>
-            <h1 id="md-1-双跳链路搭建分享文档">双跳链路搭建分享文档<a class="heading-anchor" href="#md-1-双跳链路搭建分享文档" aria-label="链接到 双跳链路搭建分享文档">#</a></h1>
+            <div class="doc-title-row">
+              <div class="doc-title-main">
+                <span class="doc-eyebrow" data-i18n="aux-md">搭建教程</span>
+                <h1 id="md-1-双跳链路搭建分享文档">双跳链路搭建分享文档<a class="heading-anchor" href="#md-1-双跳链路搭建分享文档" aria-label="链接到 双跳链路搭建分享文档">#</a></h1>
+              </div>
+              <a class="doc-download-button" href="./%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E6%90%AD%E5%BB%BA%E5%88%86%E4%BA%AB%E6%96%87%E6%A1%A3.md" download="双跳链路搭建分享文档.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a>
+            </div>
+<p>为了稳健使用Claude+Codex订阅，搭建此专属双跳链路，在你的任何端上（Windows、Mac、Mobile、Web）使用此双跳链路，可以保证你访问ChatGPT和Anthropic的出口IP始终在美国，一定程度避免频繁切IP被检测或者普通机场VPN批量被ban的问题。</p>
 <p>这是一份可分享的搭建指南：不包含任何真实服务器密码、代理密码或个人节点地址。照着做可以搭出一条“本地客户端 -&gt; 首段 VPS -&gt; 出口节点”的双跳链路。</p>
 <h2 id="md-2-目标架构">目标架构<a class="heading-anchor" href="#md-2-目标架构" aria-label="链接到 目标架构">#</a></h2>
 <figure class="code-block"><figcaption>text</figcaption><pre><code>本地 Clash Verge
@@ -865,10 +915,17 @@ rules:
 <ul><li>检查第一跳配置里的 <code>domain_suffix</code> 和 <code>domain_keyword</code>。</li><li>检查第二跳 SOCKS5 地址、账号、密码。</li><li>检查第二跳防火墙是否放行 <code>&lt;FIRST_IP&gt;</code>。</li><li>检查是否被 QUIC/UDP 绕过，必要时继续保留 AI 域名 UDP block 规则。</li></ul>
 <h2 id="md-20-参考资料">参考资料<a class="heading-anchor" href="#md-20-参考资料" aria-label="链接到 参考资料">#</a></h2>
 <ul><li>sing-box Hysteria2 inbound：https://sing-box.sagernet.org/configuration/inbound/hysteria2/</li><li>sing-box SOCKS inbound：https://sing-box.sagernet.org/configuration/inbound/socks/</li><li>sing-box SOCKS outbound：https://sing-box.sagernet.org/configuration/outbound/socks/</li><li>sing-box Route Rule：https://sing-box.sagernet.org/configuration/route/rule/</li><li>sing-box Package Manager 与 systemd 管理：https://sing-box.sagernet.org/installation/package-manager/</li></ul>
+<p>下载文档给你正在用的AI，买好服务器，让AI帮你搭建！！！</p>
+            <div class="doc-download-bottom"><a class="doc-download-button" href="./%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E6%90%AD%E5%BB%BA%E5%88%86%E4%BA%AB%E6%96%87%E6%A1%A3.md" download="双跳链路搭建分享文档.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a></div>
             </section>
             <section class="doc-panel" id="doc-panel-desktop" data-doc-panel="desktop" role="tabpanel" hidden>
-              <span class="doc-eyebrow" data-i18n="aux-desktop">桌面配置模板</span>
-              <h1 data-i18n="aux-desktop">桌面配置模板</h1>
+              <div class="doc-title-row">
+                <div class="doc-title-main">
+                  <span class="doc-eyebrow" data-i18n="aux-desktop">桌面配置模板</span>
+                  <h1 data-i18n="aux-desktop">桌面配置模板</h1>
+                </div>
+                <a class="doc-download-button" href="./%E6%A1%8C%E9%9D%A2%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF.md" download="桌面配置模板.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a>
+              </div>
               <p data-i18n="desktop-template-copy">导入前替换所有 &lt;PLACEHOLDER&gt;，再放进 Clash Verge / Mihomo。</p>
               <figure class="code-block"><figcaption>yaml</figcaption><pre><code># Clash Verge / Mihomo desktop template
 # Replace every &lt;PLACEHOLDER&gt; before importing.
@@ -979,10 +1036,16 @@ rules:
   - GEOSITE,cn,DIRECT
   - GEOIP,CN,DIRECT
   - MATCH,DIRECT</code></pre></figure>
+              <div class="doc-download-bottom"><a class="doc-download-button" href="./%E6%A1%8C%E9%9D%A2%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF.md" download="桌面配置模板.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a></div>
             </section>
             <section class="doc-panel" id="doc-panel-android" data-doc-panel="android" role="tabpanel" hidden>
-              <span class="doc-eyebrow" data-i18n="aux-android">Android/iOS配置模板</span>
-              <h1 data-i18n="aux-android">Android/iOS配置模板</h1>
+              <div class="doc-title-row">
+                <div class="doc-title-main">
+                  <span class="doc-eyebrow" data-i18n="aux-android">Android/iOS配置模板</span>
+                  <h1 data-i18n="aux-android">Android/iOS配置模板</h1>
+                </div>
+                <a class="doc-download-button" href="./Android-iOS%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF.md" download="Android-iOS配置模板.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a>
+              </div>
               <p data-i18n="android-template-copy">导入前替换所有 &lt;PLACEHOLDER&gt;，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。</p>
               <figure class="code-block"><figcaption>yaml</figcaption><pre><code># Clash / Mihomo Android template
 # Replace every &lt;PLACEHOLDER&gt; before importing.
@@ -1069,6 +1132,7 @@ rules:
   - GEOSITE,cn,DIRECT
   - GEOIP,CN,DIRECT
   - MATCH,DIRECT</code></pre></figure>
+              <div class="doc-download-bottom"><a class="doc-download-button" href="./Android-iOS%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF.md" download="Android-iOS配置模板.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a></div>
             </section>
           </article>
         </div>
@@ -1092,14 +1156,14 @@ rules:
           pageDescription: "双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。",
           "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "双跳链路搭建教程", "lang-toggle-label": "切换语言",
           "architecture-title": "流量链路图", "architecture-copy": "这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。", "route-label": "本机 Clash Verge 到目标网站的双跳链路图", "node-1-small": "LOCAL DEVICE", "node-1-title": "本机 Clash Verge", "node-1-copy": "本机客户端发起规则代理，把需要双跳的流量送入首段节点。", "node-2-small": "FIRST HOP", "node-2-title": "首段节点", "node-2-copy": "Hysteria2 入站承接本机流量，并继续转发到尾段节点。", "node-3-small": "US EXIT", "node-3-title": "尾段节点（美国 IP）", "node-3-copy": "作为美国出口 IP，负责最终落地访问。", "node-4-small": "TARGET SITE", "node-4-title": "目标网站", "node-4-copy": "目标网站只看到尾段节点的美国 IP。",
-          "aux-title": "辅助入口", "aux-md": "搭建教程", "aux-desktop": "桌面配置模板", "aux-android": "Android/iOS配置模板", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "code-copy": "复制", "code-copied": "已复制", "code-copy-failed": "复制失败", "code-copy-label": "复制代码块", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
+          "aux-title": "辅助入口", "aux-md": "搭建教程", "aux-desktop": "桌面配置模板", "aux-android": "Android/iOS配置模板", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "download-md": "下载 Markdown", "code-copy": "复制", "code-copied": "已复制", "code-copy-failed": "复制失败", "code-copy-label": "复制代码块", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
         },
         en: {
           pageTitle: "2HP - Double-Hop Setup Guide",
           pageDescription: "A visual reading page for the original double-hop setup Markdown, preserving the source content and adding one traffic-link architecture diagram.",
           "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Double-Hop Setup Tutorial", "lang-toggle-label": "Switch language",
           "architecture-title": "Traffic Diagram", "architecture-copy": "This diagram shows the actual path from local Clash Verge to the first hop, the U.S. exit hop, and the target website.", "route-label": "Double-hop path from local Clash Verge to the target website", "node-1-small": "LOCAL DEVICE", "node-1-title": "Local Clash Verge", "node-1-copy": "The local client starts rule-based proxying and sends double-hop traffic to the first hop.", "node-2-small": "FIRST HOP", "node-2-title": "First-hop node", "node-2-copy": "The Hysteria2 inbound receives local traffic and forwards it to the tail node.", "node-3-small": "US EXIT", "node-3-title": "Tail node (U.S. IP)", "node-3-copy": "This node provides the U.S. egress IP for the final visit.", "node-4-small": "TARGET SITE", "node-4-title": "Target website", "node-4-copy": "The website sees the U.S. IP of the tail node.",
-          "aux-title": "Auxiliary Entries", "aux-md": "Setup guide", "aux-desktop": "Desktop config template", "aux-android": "Android/iOS config template", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "code-copy": "Copy", "code-copied": "Copied", "code-copy-failed": "Failed", "code-copy-label": "Copy code block", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
+          "aux-title": "Auxiliary Entries", "aux-md": "Setup guide", "aux-desktop": "Desktop config template", "aux-android": "Android/iOS config template", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "download-md": "Download Markdown", "code-copy": "Copy", "code-copied": "Copied", "code-copy-failed": "Failed", "code-copy-label": "Copy code block", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
         }
       };
       const storageKey = "2hp-language";

@@ -1,0 +1,91 @@
+# Android/iOS配置模板
+
+导入前替换所有 `<PLACEHOLDER>`，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。
+
+```yaml
+# Clash / Mihomo Android template
+# Replace every <PLACEHOLDER> before importing.
+
+mixed-port: 7897
+allow-lan: false
+mode: rule
+log-level: info
+
+proxies:
+  - name: DOUBLE-HOP
+    type: hysteria2
+    server: <FIRST_IP>
+    port: <FIRST_PORT>
+    password: <HY2_PASSWORD>
+    sni: <TLS_NAME>
+    skip-cert-verify: true
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies:
+      - DOUBLE-HOP
+
+rules:
+  # Android has no desktop local upstream by default.
+  - DOMAIN-SUFFIX,youtube.com,DIRECT
+  - DOMAIN-SUFFIX,youtu.be,DIRECT
+  - DOMAIN-SUFFIX,youtube-nocookie.com,DIRECT
+  - DOMAIN-SUFFIX,youtubei.googleapis.com,DIRECT
+  - DOMAIN-SUFFIX,youtube.googleapis.com,DIRECT
+  - DOMAIN-SUFFIX,googlevideo.com,DIRECT
+  - DOMAIN-SUFFIX,ytimg.com,DIRECT
+
+  # AI/API/developer traffic uses fail-closed double hop.
+  - DOMAIN-SUFFIX,openai.com,PROXY
+  - DOMAIN-SUFFIX,chatgpt.com,PROXY
+  - DOMAIN-SUFFIX,oaistatic.com,PROXY
+  - DOMAIN-SUFFIX,oaiusercontent.com,PROXY
+  - DOMAIN-SUFFIX,oaistatsig.com,PROXY
+  - DOMAIN-SUFFIX,openai.azure.com,PROXY
+  - DOMAIN-SUFFIX,anthropic.com,PROXY
+  - DOMAIN-SUFFIX,anthropic.systems,PROXY
+  - DOMAIN-SUFFIX,claude.ai,PROXY
+  - DOMAIN-SUFFIX,google.com,PROXY
+  - DOMAIN-SUFFIX,googleapis.com,PROXY
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,PROXY
+  - DOMAIN-SUFFIX,ai.google.dev,PROXY
+  - DOMAIN-SUFFIX,aistudio.google.com,PROXY
+  - DOMAIN-SUFFIX,makersuite.google.com,PROXY
+  - DOMAIN-SUFFIX,gemini.google.com,PROXY
+  - DOMAIN-SUFFIX,gstatic.com,PROXY
+  - DOMAIN-SUFFIX,googleusercontent.com,PROXY
+  - DOMAIN-SUFFIX,githubcopilot.com,PROXY
+  - DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com,PROXY
+  - DOMAIN-SUFFIX,github.com,PROXY
+  - DOMAIN-SUFFIX,githubusercontent.com,PROXY
+  - DOMAIN-SUFFIX,githubassets.com,PROXY
+  - DOMAIN-SUFFIX,github.io,PROXY
+  - DOMAIN-SUFFIX,vscode.dev,PROXY
+  - DOMAIN-SUFFIX,vscode-cdn.net,PROXY
+  - DOMAIN-SUFFIX,visualstudio.com,PROXY
+  - DOMAIN-SUFFIX,cursor.com,PROXY
+  - DOMAIN-SUFFIX,cursor.sh,PROXY
+  - DOMAIN-SUFFIX,anysphere.co,PROXY
+  - DOMAIN-SUFFIX,windsurf.com,PROXY
+  - DOMAIN-SUFFIX,codeium.com,PROXY
+  - DOMAIN-SUFFIX,continue.dev,PROXY
+  - DOMAIN-SUFFIX,tabnine.com,PROXY
+  - DOMAIN-SUFFIX,sourcegraph.com,PROXY
+  - DOMAIN-SUFFIX,replit.com,PROXY
+  - DOMAIN-KEYWORD,openai,PROXY
+  - DOMAIN-KEYWORD,chatgpt,PROXY
+  - DOMAIN-KEYWORD,anthropic,PROXY
+  - DOMAIN-KEYWORD,claude,PROXY
+  - DOMAIN-KEYWORD,gemini,PROXY
+  - DOMAIN-KEYWORD,copilot,PROXY
+  - DOMAIN-KEYWORD,codex,PROXY
+  - DOMAIN-KEYWORD,cursor,PROXY
+  - DOMAIN-KEYWORD,windsurf,PROXY
+  - DOMAIN-KEYWORD,codeium,PROXY
+
+  # Use DIRECT for ordinary unmatched traffic.
+  - GEOSITE,cn,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,DIRECT
+```
