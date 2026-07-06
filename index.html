@@ -139,40 +139,13 @@
       display: block;
     }
     .hero > *, .section-head > *, .route-visual > *, .article-layout > * { min-width: 0; }
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      min-height: 28px;
-      padding: 4px 9px;
-      border: 1px solid rgba(15, 107, 122, 0.18);
-      border-radius: 5px;
-      background: rgba(15, 107, 122, 0.08);
-      color: var(--teal);
-      font-size: 13px;
-      font-weight: 780;
-    }
-    .eyebrow::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 0 4px rgba(47, 125, 92, 0.12);
-    }
     .hero h1 {
-      margin: 18px 0 0;
+      margin: 0;
       max-width: 760px;
       color: var(--deep);
       font-size: clamp(42px, 6vw, 74px);
       line-height: 1;
       letter-spacing: 0;
-    }
-    .hero-copy {
-      margin: 24px 0 0;
-      max-width: 700px;
-      color: var(--muted);
-      font-size: 18px;
     }
     .hero-actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
     section { padding: 68px 0; border-top: 1px solid var(--line); }
@@ -192,6 +165,7 @@
       letter-spacing: 0;
     }
     .section-head p { margin: 0; color: var(--muted); font-size: 16px; }
+    .section-head.compact { display: block; }
     .route-visual {
       background: var(--surface);
       border: 1px solid var(--line);
@@ -434,7 +408,6 @@
       .nav-links { justify-content: flex-start; }
       .hero { padding-top: 44px; gap: 30px; }
       .hero h1 { font-size: 34px; line-height: 1.08; overflow-wrap: anywhere; }
-      .hero-copy { font-size: 16px; overflow-wrap: anywhere; }
       .hero-actions { display: grid; grid-template-columns: 1fr; }
       .hero-actions .button-link { width: 100%; }
       .route-visual, .markdown-body, .article-toc { padding: 16px; }
@@ -470,12 +443,10 @@
   <main id="main">
     <div class="hero" id="top">
       <div>
-        <span class="eyebrow" data-i18n="hero-eyebrow">Markdown 原文可视化</span>
         <h1 data-i18n="hero-title">双跳链路搭建分享文档</h1>
-        <p class="hero-copy" data-i18n="hero-copy">页面主体直接呈现 Markdown 原文内容，只把排版、代码块、表格和目录做成更适合网页阅读的样子。唯一额外绘制的图是流量链路架构图。</p>
         <div class="hero-actions" aria-label="主要操作" data-i18n-attr="aria-label:hero-actions-label">
           <a class="button-link primary" href="#source" data-i18n="read-source">进入原文内容</a>
-          <a class="button-link subtle" href="#architecture" data-i18n="view-architecture">先看流量链路</a>
+          <a class="button-link subtle" href="#architecture" data-i18n="view-architecture">链路架构</a>
         </div>
       </div>
     </div>
@@ -500,9 +471,8 @@
 
     <section id="source" class="article-section" aria-labelledby="source-title">
       <div class="section-inner">
-        <div class="section-head">
+        <div class="section-head compact">
           <h2 id="source-title" data-i18n="source-title">原文内容</h2>
-          <p data-i18n="source-copy">下面不是摘要，也不是重写目录，而是把 Markdown 原文转成网页阅读版。</p>
         </div>
         <div class="article-layout">
           <aside class="article-toc" aria-label="原文小目录" data-i18n-attr="aria-label:article-toc-label">
@@ -953,9 +923,8 @@ rules:
 
     <section id="auxiliary" aria-labelledby="aux-title">
       <div class="section-inner">
-        <div class="section-head">
+        <div class="section-head compact">
           <h2 id="aux-title" data-i18n="aux-title">辅助入口</h2>
-          <p data-i18n="aux-copy">其它文件只做小入口，主内容以分享文档原文为准。</p>
         </div>
         <div class="aux-strip">
           <p data-i18n="aux-note">需要模板或分享规则时，从这里继续查看。</p>
@@ -984,21 +953,19 @@ rules:
           pageTitle: "2HP - 双跳链路搭建分享文档",
           pageDescription: "双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。",
           "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "分享文档可视化", "nav-links-label": "页面导航与语言", "lang-toggle-label": "切换语言",
-          "nav-architecture": "流量链路图", "nav-source": "原文内容", "nav-aux": "辅助入口", "nav-doc": "读原文",
-          "hero-eyebrow": "Markdown 原文可视化", "hero-title": "双跳链路搭建分享文档", "hero-copy": "页面主体直接呈现 Markdown 原文内容，只把排版、代码块、表格和目录做成更适合网页阅读的样子。唯一额外绘制的图是流量链路架构图。", "hero-actions-label": "主要操作", "read-source": "进入原文内容", "view-architecture": "先看流量链路",
+          "nav-architecture": "流量链路图", "nav-source": "原文内容", "nav-aux": "辅助入口", "nav-doc": "读原文", "hero-title": "双跳链路搭建分享文档", "hero-actions-label": "主要操作", "read-source": "进入原文内容", "view-architecture": "链路架构",
           "architecture-title": "流量链路架构图", "architecture-copy": "这张图只表达原文“目标架构”里的核心流量路径；其它章节直接展示 Markdown 原文内容。", "route-label": "双跳流量链路架构图", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "本地规则模式先识别 AI、开发、媒体和普通流量。", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "近端 UDP 稳定节点，承接 Hysteria2 入站。", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box 分流", "node-3-copy": "命中敏感域名时转发到第二跳，普通流量可直接兜底。", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 出口", "node-4-copy": "目标区域出口地址，通常只允许第一跳访问。",
-          "source-title": "原文内容", "source-copy": "下面不是摘要，也不是重写目录，而是把 Markdown 原文转成网页阅读版。", "article-toc-label": "原文小目录", "article-toc-title": "原文小目录",
-          "aux-title": "辅助入口", "aux-copy": "其它文件只做小入口，主内容以分享文档原文为准。", "aux-note": "需要模板或分享规则时，从这里继续查看。", "aux-md": "Markdown 原文", "aux-desktop": "桌面模板", "aux-android": "Android 模板", "aux-sharing": "分享规则", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
+          "source-title": "原文内容", "article-toc-label": "原文小目录", "article-toc-title": "原文小目录",
+          "aux-title": "辅助入口", "aux-note": "需要模板或分享规则时，从这里继续查看。", "aux-md": "Markdown 原文", "aux-desktop": "桌面模板", "aux-android": "Android 模板", "aux-sharing": "分享规则", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
         },
         en: {
           pageTitle: "2HP - Double-Hop Setup Guide",
           pageDescription: "A visual reading page for the original double-hop setup Markdown, preserving the source content and adding one traffic-link architecture diagram.",
           "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Guide visualization", "nav-links-label": "Page navigation and language", "lang-toggle-label": "Switch language",
-          "nav-architecture": "Traffic diagram", "nav-source": "Source content", "nav-aux": "Auxiliary", "nav-doc": "Read guide",
-          "hero-eyebrow": "Markdown source visualized", "hero-title": "Double-Hop Setup Guide", "hero-copy": "The page body now presents the original Markdown content directly, with improved web typography for headings, tables, code blocks, and navigation. The only extra drawing is the traffic-link architecture diagram.", "hero-actions-label": "Primary actions", "read-source": "Go to source content", "view-architecture": "View traffic link first",
+          "nav-architecture": "Traffic diagram", "nav-source": "Source content", "nav-aux": "Auxiliary", "nav-doc": "Read guide", "hero-title": "Double-Hop Setup Guide", "hero-actions-label": "Primary actions", "read-source": "Go to source content", "view-architecture": "Architecture",
           "architecture-title": "Traffic-Link Architecture", "architecture-copy": "This diagram only represents the core traffic path from the source guide's target architecture section. The remaining sections show the original Markdown content directly.", "route-label": "Double-hop traffic-link architecture diagram", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "Local rule mode identifies AI, developer, media, and ordinary traffic first.", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "A nearby UDP-stable node accepts the Hysteria2 inbound.", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box routing", "node-3-copy": "Matched sensitive domains forward to the second hop; ordinary traffic can fall back directly.", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 egress", "node-4-copy": "The target-region egress address, normally reachable only from the first hop.",
-          "source-title": "Source Content", "source-copy": "The section below is not a summary or rewritten outline. It is the original Markdown rendered for web reading.", "article-toc-label": "Source table of contents", "article-toc-title": "Source contents",
-          "aux-title": "Auxiliary Entries", "aux-copy": "Other files stay as compact links. The main content is the source guide itself.", "aux-note": "Open templates or sharing rules from here when needed.", "aux-md": "Markdown source", "aux-desktop": "Desktop template", "aux-android": "Android template", "aux-sharing": "Sharing rules", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
+          "source-title": "Source Content", "article-toc-label": "Source table of contents", "article-toc-title": "Source contents",
+          "aux-title": "Auxiliary Entries", "aux-note": "Open templates or sharing rules from here when needed.", "aux-md": "Markdown source", "aux-desktop": "Desktop template", "aux-android": "Android template", "aux-sharing": "Sharing rules", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
         }
       };
       const storageKey = "2hp-language";
