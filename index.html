@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2HP - 双跳链路搭建分享文档可视化</title>
-  <meta name="description" content="双跳链路搭建分享文档的可视化阅读页：只展示流量链路架构，并按原 Markdown 章节结构组织内容。">
+  <title>2HP - 双跳链路搭建分享文档</title>
+  <meta name="description" content="双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。">
   <style>
     :root {
       color-scheme: light;
@@ -18,7 +18,6 @@
       --green: #2f7d5c;
       --amber: #bd751d;
       --blue: #315f9e;
-      --red: #a33b43;
       --soft-blue: #eaf1f8;
       --soft-green: #e8f3ee;
       --soft-amber: #f7efe3;
@@ -26,7 +25,6 @@
       --radius: 8px;
       --shadow: 0 18px 46px rgba(23, 34, 51, 0.12);
     }
-
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
@@ -35,11 +33,10 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--ink);
-      line-height: 1.6;
+      line-height: 1.65;
     }
     a { color: inherit; }
     code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
-
     .skip-link {
       position: absolute;
       left: 16px;
@@ -52,7 +49,6 @@
       transition: top 160ms ease;
     }
     .skip-link:focus { top: 16px; }
-
     .site-header {
       position: sticky;
       top: 0;
@@ -116,7 +112,6 @@
     .button-link.primary { background: var(--deep); color: #fff; }
     .button-link.primary:hover { background: #25364b; }
     .button-link.subtle { border: 1px solid var(--line); background: #fff; }
-
     .lang-toggle {
       min-height: 38px;
       display: inline-grid;
@@ -137,7 +132,6 @@
     .lang-toggle span { min-width: 38px; padding: 5px 8px; border-radius: 4px; text-align: center; }
     html[data-language="zh"] [data-lang-option="zh"],
     html[data-language="en"] [data-lang-option="en"] { background: var(--deep); color: #fff; }
-
     .hero {
       width: min(var(--max), calc(100% - 32px));
       margin: 0 auto;
@@ -147,7 +141,7 @@
       gap: 42px;
       align-items: center;
     }
-    .hero > *, .section-head > *, .route-visual > *, .chapter-grid > * { min-width: 0; }
+    .hero > *, .section-head > *, .route-visual > *, .article-layout > * { min-width: 0; }
     .eyebrow {
       display: inline-flex;
       align-items: center;
@@ -184,7 +178,6 @@
       font-size: 18px;
     }
     .hero-actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
-
     .toc-panel {
       background: var(--surface);
       border: 1px solid var(--line);
@@ -219,7 +212,8 @@
       color: #fff;
       font-size: 12px;
     }
-
+    .toc-list a { color: var(--muted); text-decoration: none; }
+    .toc-list a:hover { color: var(--teal); }
     section { padding: 68px 0; border-top: 1px solid var(--line); }
     .section-inner { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; }
     .section-head {
@@ -237,7 +231,6 @@
       letter-spacing: 0;
     }
     .section-head p { margin: 0; color: var(--muted); font-size: 16px; }
-
     .route-visual {
       background: var(--surface);
       border: 1px solid var(--line);
@@ -310,61 +303,135 @@
     .route-node.first { --accent: var(--teal); }
     .route-node.policy { --accent: var(--amber); }
     .route-node.exit { --accent: var(--green); }
-
-    .route-rules {
-      margin-top: 18px;
+    .article-section { padding-top: 72px; }
+    .article-layout {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
     }
-    .rule-card {
+    .article-toc {
+      position: sticky;
+      top: 92px;
+      max-height: calc(100vh - 120px);
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 16px;
+    }
+    .article-toc strong { display: block; margin-bottom: 10px; color: var(--deep); font-size: 14px; }
+    .article-toc nav { display: grid; gap: 4px; }
+    .article-toc a {
+      display: block;
+      padding: 5px 8px;
+      border-radius: 5px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .article-toc a:hover { background: rgba(15, 107, 122, 0.08); color: var(--teal); }
+    .article-toc .toc-level-3 { padding-left: 20px; font-size: 12px; }
+    .markdown-body {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: clamp(22px, 4vw, 52px);
+    }
+    .doc-eyebrow {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 4px 9px;
+      border-radius: 5px;
+      background: var(--soft-green);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 780;
+    }
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+      color: var(--deep);
+      letter-spacing: 0;
+      scroll-margin-top: 96px;
+    }
+    .markdown-body h1 { margin: 0 0 18px; font-size: clamp(34px, 5vw, 54px); line-height: 1.02; }
+    .markdown-body h2 { margin: 46px 0 16px; padding-top: 8px; border-top: 1px solid var(--line); font-size: clamp(26px, 3vw, 36px); line-height: 1.14; }
+    .markdown-body h3 { margin: 32px 0 10px; font-size: 22px; line-height: 1.2; }
+    .markdown-body h1 + p { font-size: 18px; color: var(--muted); }
+    .heading-anchor {
+      margin-left: 8px;
+      color: var(--teal);
+      text-decoration: none;
+      opacity: 0;
+      font-size: 0.7em;
+    }
+    .markdown-body h1:hover .heading-anchor,
+    .markdown-body h2:hover .heading-anchor,
+    .markdown-body h3:hover .heading-anchor { opacity: 1; }
+    .markdown-body p,
+    .markdown-body li { color: #344054; font-size: 16px; }
+    .markdown-body p { margin: 12px 0; }
+    .markdown-body ul { margin: 12px 0 18px; padding-left: 22px; }
+    .markdown-body li { margin: 7px 0; }
+    .markdown-body code {
+      padding: 2px 5px;
+      border: 1px solid rgba(214, 222, 230, 0.8);
+      border-radius: 4px;
+      background: #f7fafc;
+      color: #20324a;
+    }
+    .code-block {
+      margin: 18px 0 24px;
+      overflow: hidden;
+      border: 1px solid #25364b;
+      border-radius: var(--radius);
+      background: #101827;
+    }
+    .code-block figcaption {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.72);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .code-block pre {
+      margin: 0;
+      padding: 16px;
+      overflow: auto;
+      color: #edf2f7;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .code-block code {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-size: inherit;
+    }
+    .table-wrap {
+      margin: 18px 0 24px;
+      overflow-x: auto;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fbfcfe;
-      padding: 16px;
     }
-    .rule-card strong { display: block; color: var(--deep); font-size: 15px; }
-    .rule-card span { display: block; margin-top: 6px; color: var(--muted); font-size: 13px; }
-    .rule-card.sensitive { background: var(--soft-green); }
-    .rule-card.media { background: var(--soft-blue); }
-    .rule-card.normal { background: var(--soft-amber); }
-
-    .chapter-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .chapter-card {
-      display: grid;
-      grid-template-columns: 52px minmax(0, 1fr);
-      gap: 14px;
-      min-height: 126px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #eef4f7; color: var(--deep); font-size: 14px; }
+    td { color: #344054; font-size: 14px; }
+    tr:last-child td { border-bottom: 0; }
+    blockquote {
+      margin: 18px 0;
+      padding: 12px 16px;
+      border-left: 4px solid var(--teal);
+      background: var(--soft-blue);
+      color: var(--muted);
     }
-    .chapter-num {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 6px;
-      background: var(--deep);
-      color: #fff;
-      font-weight: 820;
-    }
-    .chapter-card h3 { margin: 0; color: var(--deep); font-size: 19px; line-height: 1.2; letter-spacing: 0; }
-    .chapter-card p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
-    .chapter-card small { display: block; margin-top: 10px; color: var(--teal); font-size: 12px; font-weight: 780; }
-
-    .check-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-    .check-card {
-      min-height: 148px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      padding: 18px;
-    }
-    .check-card strong { display: block; color: var(--deep); font-size: 16px; }
-    .check-card span { display: block; margin-top: 8px; color: var(--muted); font-size: 14px; }
-
     .aux-strip {
       display: flex;
       align-items: center;
@@ -391,18 +458,15 @@
       font-weight: 760;
     }
     .aux-links a:hover { background: rgba(15, 107, 122, 0.08); }
-
     .site-footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); font-size: 14px; }
     .footer-inner { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
     :focus-visible { outline: 3px solid rgba(15, 107, 122, 0.35); outline-offset: 3px; }
-
     @media (max-width: 980px) {
-      .hero, .section-head { grid-template-columns: 1fr; }
-      .route-main, .check-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero, .section-head, .article-layout { grid-template-columns: 1fr; }
+      .article-toc { position: static; max-height: none; }
+      .route-main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .route-line, .route-node::after { display: none; }
-      .route-rules { grid-template-columns: 1fr; }
     }
-
     @media (max-width: 680px) {
       .nav, .hero, .section-inner, .footer-inner { width: 100%; max-width: 390px; margin-left: 0; margin-right: auto; padding-left: 16px; padding-right: 16px; }
       .nav { min-height: 0; align-items: flex-start; padding-top: 14px; padding-bottom: 14px; flex-direction: column; }
@@ -413,12 +477,13 @@
       .hero-copy { font-size: 16px; overflow-wrap: anywhere; }
       .hero-actions { display: grid; grid-template-columns: 1fr; }
       .hero-actions .button-link { width: 100%; }
-      .toc-panel, .route-visual { padding: 16px; }
-      .route-main, .chapter-grid, .check-grid { grid-template-columns: 1fr; }
-      .chapter-card { grid-template-columns: 44px minmax(0, 1fr); }
+      .toc-panel, .route-visual, .markdown-body, .article-toc { padding: 16px; }
+      .route-main { grid-template-columns: 1fr; }
+      .markdown-body h1 { font-size: 32px; }
+      .markdown-body h2 { font-size: 25px; }
+      .markdown-body h3 { font-size: 20px; }
       section { padding: 50px 0; }
     }
-
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
     }
@@ -426,7 +491,6 @@
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">跳到正文</a>
-
   <header class="site-header">
     <nav class="nav" aria-label="主导航" data-i18n-attr="aria-label:nav-label">
       <a class="brand" href="#top" aria-label="2HP 文档首页" data-i18n-attr="aria-label:brand-label">
@@ -435,44 +499,40 @@
       </a>
       <div class="nav-links" aria-label="页面导航与语言" data-i18n-attr="aria-label:nav-links-label">
         <a href="#architecture" data-i18n="nav-architecture">流量链路图</a>
-        <a href="#chapters" data-i18n="nav-chapters">文档结构</a>
-        <a href="#checks" data-i18n="nav-checks">检查点</a>
-        <a class="button-link primary" href="https://github.com/AdolphGong/2HP/blob/main/%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E6%90%AD%E5%BB%BA%E5%88%86%E4%BA%AB%E6%96%87%E6%A1%A3.md" rel="noreferrer" data-i18n="nav-doc">读原文</a>
-        <button class="lang-toggle" type="button" aria-label="切换到英文">
-          <span data-lang-option="zh">中文</span>
-          <span data-lang-option="en">EN</span>
-        </button>
+        <a href="#source" data-i18n="nav-source">原文内容</a>
+        <a href="#auxiliary" data-i18n="nav-aux">辅助入口</a>
+        <a class="button-link primary" href="双跳链路搭建分享文档.md" data-i18n="nav-doc">读原文</a>
+        <button class="lang-toggle" type="button" aria-label="切换语言" data-i18n-attr="aria-label:lang-toggle-label"><span data-lang-option="zh">中文</span><span data-lang-option="en">EN</span></button>
       </div>
     </nav>
   </header>
 
   <main id="main">
-    <div id="top" class="hero">
+    <div class="hero" id="top">
       <div>
-        <span class="eyebrow" data-i18n="hero-eyebrow">Markdown 内容可视化</span>
+        <span class="eyebrow" data-i18n="hero-eyebrow">Markdown 原文可视化</span>
         <h1 data-i18n="hero-title">双跳链路搭建分享文档</h1>
-        <p class="hero-copy" data-i18n="hero-copy">这个页面只做一件事：把分享文档的结构和关键链路可视化。图只画流量如何从本地客户端进入第一跳、经过策略分流，再到第二跳 SOCKS5 出口。</p>
+        <p class="hero-copy" data-i18n="hero-copy">页面主体直接呈现 Markdown 原文内容，只把排版、代码块、表格和目录做成更适合网页阅读的样子。唯一额外绘制的图是流量链路架构图。</p>
         <div class="hero-actions" aria-label="主要操作" data-i18n-attr="aria-label:hero-actions-label">
-          <a class="button-link primary" href="https://github.com/AdolphGong/2HP/blob/main/%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E6%90%AD%E5%BB%BA%E5%88%86%E4%BA%AB%E6%96%87%E6%A1%A3.md" rel="noreferrer" data-i18n="open-doc">打开分享文档</a>
+          <a class="button-link primary" href="#source" data-i18n="read-source">进入原文内容</a>
           <a class="button-link subtle" href="#architecture" data-i18n="view-architecture">先看流量链路</a>
         </div>
       </div>
-
       <aside class="toc-panel" aria-labelledby="toc-title">
-        <h2 id="toc-title" data-i18n="toc-title">原文结构</h2>
+        <h2 id="toc-title" data-i18n="toc-title">原文目录</h2>
         <ol class="toc-list">
-          <li><b>01</b><span data-i18n="toc-1">目标架构</span></li>
-          <li><b>02</b><span data-i18n="toc-2">先准备什么</span></li>
-          <li><b>03</b><span data-i18n="toc-3">节点怎么选</span></li>
-          <li><b>04</b><span data-i18n="toc-4">占位符</span></li>
-          <li><b>05</b><span data-i18n="toc-5">第一步：安装 sing-box</span></li>
-          <li><b>06</b><span data-i18n="toc-6">第一步补充：低配 VPS 基础加固</span></li>
-          <li><b>07</b><span data-i18n="toc-7">第二步：配置第二跳 SOCKS5</span></li>
-          <li><b>08</b><span data-i18n="toc-8">第三步：配置第一跳 Hysteria2 + 分流</span></li>
-          <li><b>09</b><span data-i18n="toc-9">第四步：配置 Clash Verge</span></li>
-          <li><b>10</b><span data-i18n="toc-10">第五步：验证</span></li>
-          <li><b>11</b><span data-i18n="toc-11">常见问题</span></li>
-          <li><b>12</b><span data-i18n="toc-12">参考资料</span></li>
+          <li><b>01</b><a href="#md-2-目标架构">目标架构</a></li>
+          <li><b>02</b><a href="#md-3-先准备什么">先准备什么</a></li>
+          <li><b>03</b><a href="#md-4-节点怎么选">节点怎么选</a></li>
+          <li><b>04</b><a href="#md-9-占位符">占位符</a></li>
+          <li><b>05</b><a href="#md-10-第一步：安装-sing-box">第一步：安装 sing-box</a></li>
+          <li><b>06</b><a href="#md-11-第一步补充：低配-vps-基础加固">第一步补充：低配 VPS 基础加固</a></li>
+          <li><b>07</b><a href="#md-12-第二步：配置第二跳-socks5">第二步：配置第二跳 SOCKS5</a></li>
+          <li><b>08</b><a href="#md-14-第三步：配置第一跳-hysteria2-分流">第三步：配置第一跳 Hysteria2 + 分流</a></li>
+          <li><b>09</b><a href="#md-15-第四步：配置-clash-verge">第四步：配置 Clash Verge</a></li>
+          <li><b>10</b><a href="#md-16-第五步：验证">第五步：验证</a></li>
+          <li><b>11</b><a href="#md-17-常见问题">常见问题</a></li>
+          <li><b>12</b><a href="#md-20-参考资料">参考资料</a></li>
         </ol>
       </aside>
     </div>
@@ -481,7 +541,7 @@
       <div class="section-inner">
         <div class="section-head">
           <h2 id="architecture-title" data-i18n="architecture-title">流量链路架构图</h2>
-          <p data-i18n="architecture-copy">这张图只表达文档的核心流量路径，不再展示仓库结构、文件地图或其它项目说明。</p>
+          <p data-i18n="architecture-copy">这张图只表达原文“目标架构”里的核心流量路径；其它章节直接展示 Markdown 原文内容。</p>
         </div>
         <div class="route-visual" aria-label="双跳流量链路架构图" data-i18n-attr="aria-label:route-label">
           <div class="route-main">
@@ -491,57 +551,471 @@
             <article class="route-node policy"><div><small data-i18n="node-3-small">POLICY ROUTER</small><h3 data-i18n="node-3-title">sing-box 分流</h3><p data-i18n="node-3-copy">命中敏感域名时转发到第二跳，普通流量可直接兜底。</p></div><span class="accent"></span></article>
             <article class="route-node exit"><div><small data-i18n="node-4-small">EXIT HOP</small><h3 data-i18n="node-4-title">SOCKS5 出口</h3><p data-i18n="node-4-copy">目标区域出口地址，通常只允许第一跳访问。</p></div><span class="accent"></span></article>
           </div>
-          <div class="route-rules">
-            <div class="rule-card sensitive"><strong data-i18n="rule-1-title">AI / 开发域名</strong><span data-i18n="rule-1-copy">显式走双跳代理组，建议 fail-closed，不放 DIRECT。</span></div>
-            <div class="rule-card media"><strong data-i18n="rule-2-title">媒体或高流量</strong><span data-i18n="rule-2-copy">按文档策略可走本地上游或单独客户端，避免占用第二跳。</span></div>
-            <div class="rule-card normal"><strong data-i18n="rule-3-title">普通未匹配流量</strong><span data-i18n="rule-3-copy">可直连或由第一跳直出，保持日常访问可用性。</span></div>
-          </div>
         </div>
       </div>
     </section>
 
-    <section id="chapters" aria-labelledby="chapters-title">
+    <section id="source" class="article-section" aria-labelledby="source-title">
       <div class="section-inner">
         <div class="section-head">
-          <h2 id="chapters-title" data-i18n="chapters-title">按分享文档结构阅读</h2>
-          <p data-i18n="chapters-copy">这里不重新发明目录，而是把 Markdown 的章节顺序变成可扫读的卡片，方便先理解全貌再进入原文操作。</p>
+          <h2 id="source-title" data-i18n="source-title">原文内容</h2>
+          <p data-i18n="source-copy">下面不是摘要，也不是重写目录，而是把 Markdown 原文转成网页阅读版。</p>
         </div>
-        <div class="chapter-grid">
-          <article class="chapter-card"><span class="chapter-num">01</span><div><h3 data-i18n="chapter-1-title">目标架构</h3><p data-i18n="chapter-1-copy">把本地客户端、第一跳 VPS、第二跳 SOCKS5 和目标网站的流量路径放在开头。</p><small data-i18n="chapter-1-small">原文第一节</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">02</span><div><h3 data-i18n="chapter-2-title">先准备什么</h3><p data-i18n="chapter-2-copy">列出本地客户端、第一跳 VPS、第二跳出口、sing-box、Hysteria2 和端口准备。</p><small data-i18n="chapter-2-small">准备清单</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">03</span><div><h3 data-i18n="chapter-3-title">节点怎么选</h3><p data-i18n="chapter-3-copy">解释第一跳、第二跳和节点地址选择，包含资源基线、IP 类型、认证和白名单。</p><small data-i18n="chapter-3-small">含：第一跳选型 / 第二跳选型 / 节点地址</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">04</span><div><h3 data-i18n="chapter-4-title">占位符</h3><p data-i18n="chapter-4-copy">用 <code>&lt;FIRST_IP&gt;</code>、<code>&lt;HY2_PASSWORD&gt;</code>、<code>&lt;SOCKS_PASS&gt;</code> 等代替真实信息。</p><small data-i18n="chapter-4-small">公开分享边界</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">05</span><div><h3 data-i18n="chapter-5-title">第一步：安装 sing-box</h3><p data-i18n="chapter-5-copy">从安装 sing-box 开始，为后面的入站、出站和路由规则准备运行环境。</p><small data-i18n="chapter-5-small">安装基础组件</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">06</span><div><h3 data-i18n="chapter-6-title">第一步补充：低配 VPS 基础加固</h3><p data-i18n="chapter-6-copy">补充 swap、swappiness、journald 和日志级别等低配机器稳定性设置。</p><small data-i18n="chapter-6-small">先稳住机器</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">07</span><div><h3 data-i18n="chapter-7-title">第二步：配置第二跳 SOCKS5</h3><p data-i18n="chapter-7-copy">在出口机配置 SOCKS5 入站、认证和 direct 出站，让它只承担第二跳出口。</p><small data-i18n="chapter-7-small">含：第二跳基础加固</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">08</span><div><h3 data-i18n="chapter-8-title">第三步：配置第一跳 Hysteria2 + 分流</h3><p data-i18n="chapter-8-copy">第一跳同时承接 Hysteria2 入站和 sing-box 策略路由，决定哪些域名进入第二跳。</p><small data-i18n="chapter-8-small">核心流量规则</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">09</span><div><h3 data-i18n="chapter-9-title">第四步：配置 Clash Verge</h3><p data-i18n="chapter-9-copy">本地导入模板并替换占位符，让客户端只连接第一跳入口。</p><small data-i18n="chapter-9-small">客户端落地</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">10</span><div><h3 data-i18n="chapter-10-title">第五步：验证</h3><p data-i18n="chapter-10-copy">用响应头、客户端日志和第一跳日志确认指定流量真的走到第二跳。</p><small data-i18n="chapter-10-small">先验证再信任</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">11</span><div><h3 data-i18n="chapter-11-title">常见问题</h3><p data-i18n="chapter-11-copy">围绕客户端连不上第一跳、第一跳能连但 AI 没走第二跳这两类问题排障。</p><small data-i18n="chapter-11-small">FAQ 排障</small></div></article>
-          <article class="chapter-card"><span class="chapter-num">12</span><div><h3 data-i18n="chapter-12-title">参考资料</h3><p data-i18n="chapter-12-copy">保留官方文档和相关项目链接，作为读者继续查证和扩展的入口。</p><small data-i18n="chapter-12-small">延伸阅读</small></div></article>
-        </div>
-      </div>
-    </section>
+        <div class="article-layout">
+          <aside class="article-toc" aria-label="原文小目录" data-i18n-attr="aria-label:article-toc-label">
+            <strong data-i18n="article-toc-title">原文小目录</strong>
+            <nav>
+              <a class="toc-level-2" href="#md-2-目标架构">目标架构</a>
+              <a class="toc-level-2" href="#md-3-先准备什么">先准备什么</a>
+              <a class="toc-level-2" href="#md-4-节点怎么选">节点怎么选</a>
+              <a class="toc-level-3" href="#md-5-第一跳选型">第一跳选型</a>
+              <a class="toc-level-3" href="#md-6-第一跳资源基线">第一跳资源基线</a>
+              <a class="toc-level-3" href="#md-7-第二跳选型">第二跳选型</a>
+              <a class="toc-level-3" href="#md-8-节点地址怎么选">节点地址怎么选</a>
+              <a class="toc-level-2" href="#md-9-占位符">占位符</a>
+              <a class="toc-level-2" href="#md-10-第一步：安装-sing-box">第一步：安装 sing-box</a>
+              <a class="toc-level-2" href="#md-11-第一步补充：低配-vps-基础加固">第一步补充：低配 VPS 基础加固</a>
+              <a class="toc-level-2" href="#md-12-第二步：配置第二跳-socks5">第二步：配置第二跳 SOCKS5</a>
+              <a class="toc-level-3" href="#md-13-第二跳基础加固">第二跳基础加固</a>
+              <a class="toc-level-2" href="#md-14-第三步：配置第一跳-hysteria2-分流">第三步：配置第一跳 Hysteria2 + 分流</a>
+              <a class="toc-level-2" href="#md-15-第四步：配置-clash-verge">第四步：配置 Clash Verge</a>
+              <a class="toc-level-2" href="#md-16-第五步：验证">第五步：验证</a>
+              <a class="toc-level-2" href="#md-17-常见问题">常见问题</a>
+              <a class="toc-level-3" href="#md-18-客户端连接不上第一跳">客户端连接不上第一跳</a>
+              <a class="toc-level-3" href="#md-19-第一跳能连，但-ai-没走第二跳">第一跳能连，但 AI 没走第二跳</a>
+              <a class="toc-level-2" href="#md-20-参考资料">参考资料</a>
+            </nav>
+          </aside>
+          <article class="markdown-body">
+<span class="doc-eyebrow">Markdown 原文</span><h1 id="md-1-双跳链路搭建分享文档">双跳链路搭建分享文档<a class="heading-anchor" href="#md-1-双跳链路搭建分享文档" aria-label="链接到 双跳链路搭建分享文档">#</a></h1>
+<p>这是一份可分享的搭建指南：不包含任何真实服务器密码、代理密码或个人节点地址。照着做可以搭出一条“本地客户端 -&gt; 首段 VPS -&gt; 出口节点”的双跳链路。</p>
+<h2 id="md-2-目标架构">目标架构<a class="heading-anchor" href="#md-2-目标架构" aria-label="链接到 目标架构">#</a></h2>
+<figure class="code-block"><figcaption>text</figcaption><pre><code>本地 Clash Verge
+  -&gt; 第一跳：离自己近的 VPS，跑 Hysteria2 入站和 sing-box 分流
+  -&gt; 第二跳：目标地区的 SOCKS5 出口
+  -&gt; 目标网站</code></pre></figure>
+<p>第一跳负责“接入和分流”，第二跳负责“最终落地”。普通流量可以本地直连或从第一跳直连出去，只有需要指定落地地区的域名才转发到第二跳。对 AI/编程域名建议采用失败关闭策略：规则显式命中双跳，代理组里不放 <code>DIRECT</code>。</p>
+<h2 id="md-3-先准备什么">先准备什么<a class="heading-anchor" href="#md-3-先准备什么" aria-label="链接到 先准备什么">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>项目</th><th>建议</th></tr></thead><tbody><tr><td>本地客户端</td><td>Clash Verge 或兼容 Clash Meta 内核的客户端</td></tr><tr><td>第一跳 VPS</td><td>Ubuntu/Debian，离你近，UDP 稳定，公网 IPv4 固定</td></tr><tr><td>第二跳出口</td><td>SOCKS5，目标网站友好的地区和网络类型</td></tr><tr><td>服务端程序</td><td>sing-box</td></tr><tr><td>第一跳协议</td><td>Hysteria2/UDP</td></tr><tr><td>第一跳端口</td><td>随机高位 UDP 端口，例如 <code>20000-60000</code></td></tr></tbody></table></div>
+<h2 id="md-4-节点怎么选">节点怎么选<a class="heading-anchor" href="#md-4-节点怎么选" aria-label="链接到 节点怎么选">#</a></h2>
+<h3 id="md-5-第一跳选型">第一跳选型<a class="heading-anchor" href="#md-5-第一跳选型" aria-label="链接到 第一跳选型">#</a></h3>
+<p>第一跳不一定要在目标网站所在国家，它更像“入口加速器”。选择标准：</p>
+<ul><li>离自己近：大陆用户常见选择是新加坡、日本、香港、韩国等。</li><li>UDP 质量好：Hysteria2 走 QUIC/UDP，运营商到机房的 UDP 丢包越少越好。</li><li>公网 IP 稳定：避免频繁换 IP，否则客户端和第二跳白名单都要改。</li><li>云厂商安全组好管理：必须能放行自定义 UDP 端口。</li><li>带宽够用：第一跳会承接所有客户端入口流量。</li></ul>
+<p>不要只看延迟最低。更重要的是高峰期丢包、绕路、晚间稳定性。</p>
+<h3 id="md-6-第一跳资源基线">第一跳资源基线<a class="heading-anchor" href="#md-6-第一跳资源基线" aria-label="链接到 第一跳资源基线">#</a></h3>
+<p>第一跳不要只看延迟和带宽，也要看内存和云盘 IOPS。Hysteria2 + sing-box 本身不重，但低配节点在连接抖动、DNS 查询、系统更新或 page cache 被回收时，可能出现“CPU 不高但整机假死”的状态。</p>
+<p>建议基线：</p>
+<ul><li>内存至少 1G，并配置 1G swap；预算允许时选 2G 内存更稳。</li><li>云盘不只看容量，还要看 IOPS；低 IOPS 云盘在内存压力下容易被读 IO 风暴拖死。</li><li>长期运行时 <code>sing-box</code> 日志级别用 <code>warn</code>，排障时再临时切到 <code>info</code>。</li><li>看到 <code>systemd-journald: Under memory pressure, flushing caches.</code>、<code>load average</code> 很高、<code>blocked</code> 很多、<code>sar -d</code> 里 <code>rkB/s</code> 高而 <code>wkB/s</code> 很低时，优先按内存压力和读 IO 风暴排查，不要误判为日志写爆。</li></ul>
+<h3 id="md-7-第二跳选型">第二跳选型<a class="heading-anchor" href="#md-7-第二跳选型" aria-label="链接到 第二跳选型">#</a></h3>
+<p>第二跳才决定目标网站看到的出口 IP。选择标准：</p>
+<ul><li>地区匹配目标：如果目标服务希望美国环境，第二跳就选美国。</li><li>IP 类型干净：AI、风控敏感站点通常更偏好住宅/ISP/干净静态 IP。</li><li>支持账号密码：SOCKS5 必须有认证。</li><li>支持白名单：只允许第一跳 IP 访问，防止出口被扫到后被滥用。</li><li>尽量静态：频繁换 IP 会影响账号风控、登录状态和可用性。</li></ul>
+<p>如果第二跳是自有 VPS，可以直接在第二台机器上跑 SOCKS5；如果是第三方住宅代理，则在第一跳配置 SOCKS5 出站即可。</p>
+<h3 id="md-8-节点地址怎么选">节点地址怎么选<a class="heading-anchor" href="#md-8-节点地址怎么选" aria-label="链接到 节点地址怎么选">#</a></h3>
+<ul><li>客户端 <code>server</code> 填第一跳地址，不填第二跳地址。</li><li>有自己的域名时，推荐把域名 A 记录指向第一跳，并申请真实 TLS 证书。</li><li>没有域名时，也可以用第一跳 IP + 自签证书，但客户端要开启跳过证书验证。</li><li>第二跳地址只写在第一跳的 sing-box 配置里，不暴露给本地客户端。</li><li>第二跳如果是自建 SOCKS5，防火墙只放行第一跳 IP。</li></ul>
+<p>端口建议随机高位，不建议用太常见的 <code>443</code>、<code>8443</code>、<code>1080</code>。随机高位端口不是安全措施本身，但能少一些无意义扫描。</p>
+<h2 id="md-9-占位符">占位符<a class="heading-anchor" href="#md-9-占位符" aria-label="链接到 占位符">#</a></h2>
+<p>后面的命令和配置里会用这些占位符，先替换成你自己的值。</p>
+<div class="table-wrap"><table><thead><tr><th>占位符</th><th>含义</th><th>示例</th></tr></thead><tbody><tr><td><code>&lt;FIRST_IP&gt;</code></td><td>第一跳 VPS 公网 IP</td><td><code>1.2.3.4</code></td></tr><tr><td><code>&lt;FIRST_PORT&gt;</code></td><td>第一跳 Hysteria2 UDP 端口</td><td><code>25000</code></td></tr><tr><td><code>&lt;HY2_PASSWORD&gt;</code></td><td>第一跳 Hysteria2 密码</td><td>随机长字符串</td></tr><tr><td><code>&lt;TLS_NAME&gt;</code></td><td>证书 CN/SNI</td><td>有域名填域名；无域名可填一个固定名称</td></tr><tr><td><code>&lt;EXIT_IP&gt;</code></td><td>第二跳 SOCKS5 地址</td><td><code>5.6.7.8</code></td></tr><tr><td><code>&lt;SOCKS_PORT&gt;</code></td><td>第二跳 SOCKS5 端口</td><td><code>30080</code></td></tr><tr><td><code>&lt;SOCKS_USER&gt;</code></td><td>第二跳 SOCKS5 账号</td><td><code>user1</code></td></tr><tr><td><code>&lt;SOCKS_PASS&gt;</code></td><td>第二跳 SOCKS5 密码</td><td>随机长字符串</td></tr></tbody></table></div>
+<p>生成密码可以用：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>openssl rand -base64 24</code></pre></figure>
+<h2 id="md-10-第一步：安装-sing-box">第一步：安装 sing-box<a class="heading-anchor" href="#md-10-第一步：安装-sing-box" aria-label="链接到 第一步：安装 sing-box">#</a></h2>
+<p>两台 VPS 都执行：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo apt-get update
+sudo apt-get install -y curl ca-certificates openssl iptables-persistent
+curl -fsSL https://sing-box.app/install.sh | sudo sh</code></pre></figure>
+<p>安装后常用命令：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo systemctl enable sing-box
+sudo systemctl start sing-box
+sudo systemctl status sing-box
+sudo journalctl -u sing-box --output cat -f</code></pre></figure>
+<h2 id="md-11-第一步补充：低配-vps-基础加固">第一步补充：低配 VPS 基础加固<a class="heading-anchor" href="#md-11-第一步补充：低配-vps-基础加固" aria-label="链接到 第一步补充：低配 VPS 基础加固">#</a></h2>
+<p>低配第一跳建议在安装服务后先做三件事：加 swap、限制 journald、生产环境降低 sing-box 日志级别。这样可以避免内存压力触发 page cache 回收，进而把云盘 IOPS 打满。</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code># 增加 1G swap
+sudo fallocate -l 1G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
-    <section id="checks" aria-labelledby="checks-title">
-      <div class="section-inner">
-        <div class="section-head">
-          <h2 id="checks-title" data-i18n="checks-title">文档反复强调的检查点</h2>
-          <p data-i18n="checks-copy">这些不是新内容，而是从分享文档里抽出来的执行重点，用来提醒读者读原文时不要跳过。</p>
-        </div>
-        <div class="check-grid">
-          <article class="check-card"><strong data-i18n="check-1-title">第二跳不暴露给本地</strong><span data-i18n="check-1-copy">客户端只写第一跳；第二跳地址只进入第一跳 sing-box 配置。</span></article>
-          <article class="check-card"><strong data-i18n="check-2-title">SOCKS5 要有认证和白名单</strong><span data-i18n="check-2-copy">第二跳端口只允许第一跳 IP 访问，避免被扫到后滥用。</span></article>
-          <article class="check-card"><strong data-i18n="check-3-title">敏感域名不要 DIRECT</strong><span data-i18n="check-3-copy">AI/开发域名命中双跳，失败即关闭，避免静默直连。</span></article>
-          <article class="check-card"><strong data-i18n="check-4-title">验证再信任路径</strong><span data-i18n="check-4-copy">用响应头、客户端日志、第一跳日志确认流量真的去了第二跳。</span></article>
+# 设置 swappiness=10；如果系统已有 swappiness=0，需要一并改掉
+sudo sed -i.bak -E 's/^[[:space:]]*vm\.swappiness[[:space:]]*=.*/vm.swappiness=10/' /etc/sysctl.conf
+sudo sed -i.bak -E 's/^[[:space:]]*vm\.swappiness[[:space:]]*=.*/vm.swappiness=10/' /etc/sysctl.d/99-sysctl.conf 2&gt;/dev/null || true
+echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-vpnroot.conf
+sudo sysctl -w vm.swappiness=10
+sudo sysctl --system
+
+# 限制 journald 占用和突发日志
+sudo mkdir -p /etc/systemd/journald.conf.d
+sudo tee /etc/systemd/journald.conf.d/99-vpnroot.conf &gt;/dev/null &lt;&lt;'EOF'
+[Journal]
+SystemMaxUse=100M
+RuntimeMaxUse=32M
+RateLimitIntervalSec=30s
+RateLimitBurst=200
+EOF
+sudo systemctl restart systemd-journald</code></pre></figure>
+<p><code>sing-box</code> 配置在调试阶段可以用 <code>info</code>；稳定后建议改为 <code>warn</code>。本地 Clash 仍然可以观察域名是否命中本地规则和双跳节点；只有当你要在 VPS 上确认某个域名是否转发到了第二跳 SOCKS5 时，才需要临时切回 <code>info</code> 看 <code>outbound/socks</code> 日志。</p>
+<h2 id="md-12-第二步：配置第二跳-socks5">第二步：配置第二跳 SOCKS5<a class="heading-anchor" href="#md-12-第二步：配置第二跳-socks5" aria-label="链接到 第二步：配置第二跳 SOCKS5">#</a></h2>
+<p>如果第二跳是第三方 SOCKS5 服务，跳过本节，直接拿到 <code>&lt;EXIT_IP&gt;</code>、<code>&lt;SOCKS_PORT&gt;</code>、<code>&lt;SOCKS_USER&gt;</code>、<code>&lt;SOCKS_PASS&gt;</code> 即可。</p>
+<p>如果第二跳是自己的 VPS，在第二台机器写入 <code>/etc/sing-box/config.json</code>：</p>
+<figure class="code-block"><figcaption>json</figcaption><pre><code>{
+  &quot;log&quot;: {
+    &quot;level&quot;: &quot;warn&quot;,
+    &quot;timestamp&quot;: true
+  },
+  &quot;inbounds&quot;: [
+    {
+      &quot;type&quot;: &quot;socks&quot;,
+      &quot;tag&quot;: &quot;socks-in&quot;,
+      &quot;listen&quot;: &quot;0.0.0.0&quot;,
+      &quot;listen_port&quot;: &lt;SOCKS_PORT&gt;,
+      &quot;users&quot;: [
+        {
+          &quot;username&quot;: &quot;&lt;SOCKS_USER&gt;&quot;,
+          &quot;password&quot;: &quot;&lt;SOCKS_PASS&gt;&quot;
+        }
+      ]
+    }
+  ],
+  &quot;outbounds&quot;: [
+    {
+      &quot;type&quot;: &quot;direct&quot;,
+      &quot;tag&quot;: &quot;direct&quot;
+    }
+  ],
+  &quot;route&quot;: {
+    &quot;final&quot;: &quot;direct&quot;
+  }
+}</code></pre></figure>
+<p>检查并启动：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo sing-box check -c /etc/sing-box/config.json
+sudo systemctl restart sing-box
+sudo ss -lntup | grep &lt;SOCKS_PORT&gt;</code></pre></figure>
+<p>只允许第一跳访问 SOCKS5 端口：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo iptables -A INPUT -p tcp -s &lt;FIRST_IP&gt; --dport &lt;SOCKS_PORT&gt; -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport &lt;SOCKS_PORT&gt; -j DROP
+sudo netfilter-persistent save</code></pre></figure>
+<p>如果云厂商还有安全组，也在安全组里只允许 <code>&lt;FIRST_IP&gt;</code> 访问 TCP <code>&lt;SOCKS_PORT&gt;</code>。</p>
+<h3 id="md-13-第二跳基础加固">第二跳基础加固<a class="heading-anchor" href="#md-13-第二跳基础加固" aria-label="链接到 第二跳基础加固">#</a></h3>
+<p>第二跳职责比第一跳简单，但如果是 1G 内存的小机器，也建议做同样的低成本保险。即使面板显示“数据磁盘 0GB”，也可以把 swap 文件放在系统盘 <code>/</code> 上；先确认系统盘空间足够。</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>df -h /
+free -h
+swapon --show</code></pre></figure>
+<p>如果 <code>/</code> 至少有 2G 可用，增加 1G swap：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo fallocate -l 1G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024 status=progress
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+sudo sed -i.bak -E 's/^[[:space:]]*vm\.swappiness[[:space:]]*=.*/vm.swappiness=10/' /etc/sysctl.conf
+sudo sed -i.bak -E 's/^[[:space:]]*vm\.swappiness[[:space:]]*=.*/vm.swappiness=10/' /etc/sysctl.d/99-sysctl.conf 2&gt;/dev/null || true
+echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-vpnroot.conf
+
+sudo sysctl -w vm.swappiness=10
+sudo sysctl --system
+
+swapon --show
+free -h
+cat /proc/sys/vm/swappiness</code></pre></figure>
+<p>限制 journald，避免异常连接或系统压力时日志继续放大 IO 压力：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo mkdir -p /etc/systemd/journald.conf.d
+sudo tee /etc/systemd/journald.conf.d/99-vpnroot.conf &gt;/dev/null &lt;&lt;'EOF'
+[Journal]
+SystemMaxUse=100M
+RuntimeMaxUse=32M
+RateLimitIntervalSec=30s
+RateLimitBurst=200
+EOF
+
+sudo systemctl restart systemd-journald</code></pre></figure>
+<p>如果执行 <code>sudo</code> 时看到 <code>unable to resolve host</code>，补一条本机 hostname 到 <code>/etc/hosts</code>：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>grep -q &quot;$(hostname)&quot; /etc/hosts || echo &quot;127.0.1.1 $(hostname)&quot; | sudo tee -a /etc/hosts
+sudo true</code></pre></figure>
+<p>第二跳稳定后也建议把 <code>sing-box</code> 日志级别设为 <code>warn</code>：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo cp -a /etc/sing-box/config.json /etc/sing-box/config.json.bak.$(date +%F-%H%M%S)
+
+sudo python3 -c 'import json,pathlib
+p=pathlib.Path(&quot;/etc/sing-box/config.json&quot;)
+data=json.loads(p.read_text())
+data.setdefault(&quot;log&quot;, {})
+data[&quot;log&quot;][&quot;level&quot;]=&quot;warn&quot;
+data[&quot;log&quot;][&quot;timestamp&quot;]=True
+p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + &quot;\n&quot;)'
+
+sudo sing-box check -c /etc/sing-box/config.json
+sudo systemctl restart sing-box
+grep -A5 -n '&quot;log&quot;' /etc/sing-box/config.json</code></pre></figure>
+<p>验证目标状态：<code>swapon --show</code> 能看到 <code>/swapfile 1024M</code>，<code>cat /proc/sys/vm/swappiness</code> 输出 <code>10</code>，<code>grep -A5 -n '&quot;log&quot;' /etc/sing-box/config.json</code> 里显示 <code>&quot;level&quot;: &quot;warn&quot;</code>。</p>
+<h2 id="md-14-第三步：配置第一跳-hysteria2-分流">第三步：配置第一跳 Hysteria2 + 分流<a class="heading-anchor" href="#md-14-第三步：配置第一跳-hysteria2-分流" aria-label="链接到 第三步：配置第一跳 Hysteria2 + 分流">#</a></h2>
+<p>在第一跳生成自签证书：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo install -d -m 0755 /etc/sing-box
+sudo openssl ecparam -genkey -name prime256v1 -out /etc/sing-box/key.pem
+sudo openssl req -new -x509 -days 3650 -key /etc/sing-box/key.pem -out /etc/sing-box/cert.pem -subj &quot;/CN=&lt;TLS_NAME&gt;&quot;
+sudo chmod 644 /etc/sing-box/cert.pem
+sudo chmod 600 /etc/sing-box/key.pem</code></pre></figure>
+<p>写入第一跳 <code>/etc/sing-box/config.json</code>：</p>
+<figure class="code-block"><figcaption>json</figcaption><pre><code>{
+  &quot;log&quot;: {
+    &quot;level&quot;: &quot;info&quot;,
+    &quot;timestamp&quot;: true
+  },
+  &quot;inbounds&quot;: [
+    {
+      &quot;type&quot;: &quot;hysteria2&quot;,
+      &quot;tag&quot;: &quot;hy2-in&quot;,
+      &quot;listen&quot;: &quot;0.0.0.0&quot;,
+      &quot;listen_port&quot;: &lt;FIRST_PORT&gt;,
+      &quot;users&quot;: [
+        {
+          &quot;password&quot;: &quot;&lt;HY2_PASSWORD&gt;&quot;
+        }
+      ],
+      &quot;tls&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;server_name&quot;: &quot;&lt;TLS_NAME&gt;&quot;,
+        &quot;certificate_path&quot;: &quot;/etc/sing-box/cert.pem&quot;,
+        &quot;key_path&quot;: &quot;/etc/sing-box/key.pem&quot;
+      }
+    }
+  ],
+  &quot;outbounds&quot;: [
+    {
+      &quot;type&quot;: &quot;socks&quot;,
+      &quot;tag&quot;: &quot;exit-socks&quot;,
+      &quot;server&quot;: &quot;&lt;EXIT_IP&gt;&quot;,
+      &quot;server_port&quot;: &lt;SOCKS_PORT&gt;,
+      &quot;version&quot;: &quot;5&quot;,
+      &quot;username&quot;: &quot;&lt;SOCKS_USER&gt;&quot;,
+      &quot;password&quot;: &quot;&lt;SOCKS_PASS&gt;&quot;,
+      &quot;network&quot;: &quot;tcp&quot;
+    },
+    {
+      &quot;type&quot;: &quot;direct&quot;,
+      &quot;tag&quot;: &quot;direct&quot;
+    },
+    {
+      &quot;type&quot;: &quot;block&quot;,
+      &quot;tag&quot;: &quot;block&quot;
+    }
+  ],
+  &quot;route&quot;: {
+    &quot;rules&quot;: [
+      {
+        &quot;ip_is_private&quot;: true,
+        &quot;outbound&quot;: &quot;direct&quot;
+      },
+      {
+        &quot;domain_suffix&quot;: [
+          &quot;aliyun.com&quot;,
+          &quot;aliyuncs.com&quot;,
+          &quot;alicdn.com&quot;,
+          &quot;taobao.com&quot;,
+          &quot;tmall.com&quot;
+        ],
+        &quot;outbound&quot;: &quot;direct&quot;
+      },
+      {
+        &quot;network&quot;: &quot;udp&quot;,
+        &quot;domain_suffix&quot;: [
+          &quot;openai.com&quot;,
+          &quot;chatgpt.com&quot;,
+          &quot;oaistatic.com&quot;,
+          &quot;oaiusercontent.com&quot;,
+          &quot;oaistatsig.com&quot;,
+          &quot;anthropic.com&quot;,
+          &quot;anthropic.systems&quot;,
+          &quot;claude.ai&quot;,
+          &quot;google.com&quot;,
+          &quot;googleapis.com&quot;,
+          &quot;generativelanguage.googleapis.com&quot;,
+          &quot;ai.google.dev&quot;,
+          &quot;aistudio.google.com&quot;,
+          &quot;makersuite.google.com&quot;,
+          &quot;gemini.google.com&quot;,
+          &quot;gstatic.com&quot;,
+          &quot;googleusercontent.com&quot;,
+          &quot;googleplay.com&quot;,
+          &quot;play.google.com&quot;,
+          &quot;android.clients.google.com&quot;,
+          &quot;dl.google.com&quot;,
+          &quot;gvt1.com&quot;,
+          &quot;gvt2.com&quot;,
+          &quot;gvt3.com&quot;,
+          &quot;pay.google.com&quot;,
+          &quot;payments.google.com&quot;,
+          &quot;wallet.google.com&quot;,
+          &quot;githubcopilot.com&quot;,
+          &quot;copilot-proxy.githubusercontent.com&quot;,
+          &quot;github.com&quot;,
+          &quot;githubusercontent.com&quot;,
+          &quot;githubassets.com&quot;,
+          &quot;github.io&quot;,
+          &quot;vscode.dev&quot;,
+          &quot;vscode-cdn.net&quot;,
+          &quot;visualstudio.com&quot;,
+          &quot;cursor.com&quot;,
+          &quot;cursor.sh&quot;,
+          &quot;anysphere.co&quot;,
+          &quot;windsurf.com&quot;,
+          &quot;codeium.com&quot;,
+          &quot;continue.dev&quot;,
+          &quot;tabnine.com&quot;,
+          &quot;sourcegraph.com&quot;,
+          &quot;replit.com&quot;
+        ],
+        &quot;outbound&quot;: &quot;block&quot;
+      },
+      {
+        &quot;domain_suffix&quot;: [
+          &quot;openai.com&quot;,
+          &quot;chatgpt.com&quot;,
+          &quot;oaistatic.com&quot;,
+          &quot;oaiusercontent.com&quot;,
+          &quot;oaistatsig.com&quot;,
+          &quot;openai.azure.com&quot;,
+          &quot;anthropic.com&quot;,
+          &quot;anthropic.systems&quot;,
+          &quot;claude.ai&quot;,
+          &quot;google.com&quot;,
+          &quot;googleapis.com&quot;,
+          &quot;generativelanguage.googleapis.com&quot;,
+          &quot;ai.google.dev&quot;,
+          &quot;aistudio.google.com&quot;,
+          &quot;makersuite.google.com&quot;,
+          &quot;gemini.google.com&quot;,
+          &quot;gstatic.com&quot;,
+          &quot;googleusercontent.com&quot;,
+          &quot;googleplay.com&quot;,
+          &quot;play.google.com&quot;,
+          &quot;android.clients.google.com&quot;,
+          &quot;dl.google.com&quot;,
+          &quot;gvt1.com&quot;,
+          &quot;gvt2.com&quot;,
+          &quot;gvt3.com&quot;,
+          &quot;pay.google.com&quot;,
+          &quot;payments.google.com&quot;,
+          &quot;wallet.google.com&quot;,
+          &quot;githubcopilot.com&quot;,
+          &quot;copilot-proxy.githubusercontent.com&quot;,
+          &quot;github.com&quot;,
+          &quot;githubusercontent.com&quot;,
+          &quot;githubassets.com&quot;,
+          &quot;github.io&quot;,
+          &quot;vscode.dev&quot;,
+          &quot;vscode-cdn.net&quot;,
+          &quot;visualstudio.com&quot;,
+          &quot;cursor.com&quot;,
+          &quot;cursor.sh&quot;,
+          &quot;anysphere.co&quot;,
+          &quot;windsurf.com&quot;,
+          &quot;codeium.com&quot;,
+          &quot;continue.dev&quot;,
+          &quot;tabnine.com&quot;,
+          &quot;sourcegraph.com&quot;,
+          &quot;replit.com&quot;
+        ],
+        &quot;outbound&quot;: &quot;exit-socks&quot;
+      },
+      {
+        &quot;domain_keyword&quot;: [
+          &quot;openai&quot;,
+          &quot;chatgpt&quot;,
+          &quot;anthropic&quot;,
+          &quot;claude&quot;,
+          &quot;gemini&quot;,
+          &quot;copilot&quot;,
+          &quot;codex&quot;,
+          &quot;cursor&quot;,
+          &quot;windsurf&quot;,
+          &quot;codeium&quot;
+        ],
+        &quot;outbound&quot;: &quot;exit-socks&quot;
+      }
+    ],
+    &quot;final&quot;: &quot;direct&quot;
+  }
+}</code></pre></figure>
+<p>检查并启动：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo sing-box check -c /etc/sing-box/config.json
+sudo systemctl restart sing-box
+sudo journalctl -u sing-box --output cat -f</code></pre></figure>
+<p>云厂商安全组放行第一跳端口：</p>
+<ul><li>入站 UDP <code>&lt;FIRST_PORT&gt;</code>：来源可以是你的本地公网 IP，或先临时放开再收紧。</li><li>SSH 端口：尽量只允许自己的固定公网 IP。</li><li>不需要公开第二跳 SOCKS5 给全网。</li></ul>
+<h2 id="md-15-第四步：配置-clash-verge">第四步：配置 Clash Verge<a class="heading-anchor" href="#md-15-第四步：配置-clash-verge" aria-label="链接到 第四步：配置 Clash Verge">#</a></h2>
+<p>在本地新建一个 Clash Profile：</p>
+<figure class="code-block"><figcaption>yaml</figcaption><pre><code>mixed-port: 7897
+allow-lan: false
+mode: rule
+log-level: info
+
+proxies:
+  - name: DOUBLE-HOP
+    type: hysteria2
+    server: &lt;FIRST_IP&gt;
+    port: &lt;FIRST_PORT&gt;
+    password: &lt;HY2_PASSWORD&gt;
+    sni: &lt;TLS_NAME&gt;
+    skip-cert-verify: true
+
+proxy-groups:
+  - name: WORK-AI
+    type: select
+    proxies:
+      - DOUBLE-HOP
+
+rules:
+  # AI/API/AI 编程流量失败关闭：WORK-AI 不包含 DIRECT。
+  - DOMAIN-SUFFIX,openai.com,WORK-AI
+  - DOMAIN-SUFFIX,chatgpt.com,WORK-AI
+  - DOMAIN-SUFFIX,anthropic.com,WORK-AI
+  - DOMAIN-SUFFIX,claude.ai,WORK-AI
+  - DOMAIN-SUFFIX,googleapis.com,WORK-AI
+  - DOMAIN-SUFFIX,gemini.google.com,WORK-AI
+  - DOMAIN-SUFFIX,githubcopilot.com,WORK-AI
+  - DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com,WORK-AI
+  - DOMAIN-SUFFIX,cursor.com,WORK-AI
+  - DOMAIN-SUFFIX,windsurf.com,WORK-AI
+  - DOMAIN-KEYWORD,copilot,WORK-AI
+  - DOMAIN-KEYWORD,codex,WORK-AI
+
+  # 普通未命中流量本地直连，避免第一跳异常拖垮日常网络。
+  - MATCH,DIRECT</code></pre></figure>
+<p>Clash Verge 主界面建议：</p>
+<ul><li>系统代理：开启。</li><li>TUN：关闭。</li><li>模式：Rule。</li><li>Profile：选中新建的配置。</li></ul>
+<p>如果你使用真实域名和可信证书，可以把 <code>skip-cert-verify</code> 改为 <code>false</code> 或删除。</p>
+<h2 id="md-16-第五步：验证">第五步：验证<a class="heading-anchor" href="#md-16-第五步：验证" aria-label="链接到 第五步：验证">#</a></h2>
+<p>本地检查第一跳是否可用：</p>
+<figure class="code-block"><figcaption>powershell</figcaption><pre><code>curl.exe -x http://127.0.0.1:7897 https://www.cloudflare.com/cdn-cgi/trace --max-time 10</code></pre></figure>
+<p>检查目标 AI 流量是否落在第二跳：</p>
+<figure class="code-block"><figcaption>powershell</figcaption><pre><code>curl.exe -x http://127.0.0.1:7897 https://chatgpt.com -I --max-time 10</code></pre></figure>
+<p>看 <code>CF-RAY</code> 后缀：</p>
+<ul><li>第二跳目标地区：分流成功。</li><li>第一跳地区：AI 域名没有进 SOCKS5，需要看第一跳 sing-box 路由和日志。</li></ul>
+<p>在第一跳看日志：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo journalctl -u sing-box --output cat -f</code></pre></figure>
+<p>在第二跳看 SOCKS5 是否有流量：</p>
+<figure class="code-block"><figcaption>bash</figcaption><pre><code>sudo journalctl -u sing-box --output cat -f</code></pre></figure>
+<h2 id="md-17-常见问题">常见问题<a class="heading-anchor" href="#md-17-常见问题" aria-label="链接到 常见问题">#</a></h2>
+<h3 id="md-18-客户端连接不上第一跳">客户端连接不上第一跳<a class="heading-anchor" href="#md-18-客户端连接不上第一跳" aria-label="链接到 客户端连接不上第一跳">#</a></h3>
+<ul><li>检查第一跳安全组是否放行 UDP <code>&lt;FIRST_PORT&gt;</code>。</li><li>检查第一跳 <code>systemctl status sing-box</code>。</li><li>检查 Clash 配置里的 IP、端口、密码、SNI 是否一致。</li><li>自签证书场景下确认 <code>skip-cert-verify: true</code>。</li></ul>
+<h3 id="md-19-第一跳能连，但-ai-没走第二跳">第一跳能连，但 AI 没走第二跳<a class="heading-anchor" href="#md-19-第一跳能连，但-ai-没走第二跳" aria-label="链接到 第一跳能连，但 AI 没走第二跳">#</a></h3>
+<ul><li>检查第一跳配置里的 <code>domain_suffix</code> 和 <code>domain_keyword</code>。</li><li>检查第二跳 SOCKS5 地址、账号、密码。</li><li>检查第二跳防火墙是否放行 <code>&lt;FIRST_IP&gt;</code>。</li><li>检查是否被 QUIC/UDP 绕过，必要时继续保留 AI 域名 UDP block 规则。</li></ul>
+<h2 id="md-20-参考资料">参考资料<a class="heading-anchor" href="#md-20-参考资料" aria-label="链接到 参考资料">#</a></h2>
+<ul><li>sing-box Hysteria2 inbound：https://sing-box.sagernet.org/configuration/inbound/hysteria2/</li><li>sing-box SOCKS inbound：https://sing-box.sagernet.org/configuration/inbound/socks/</li><li>sing-box SOCKS outbound：https://sing-box.sagernet.org/configuration/outbound/socks/</li><li>sing-box Route Rule：https://sing-box.sagernet.org/configuration/route/rule/</li><li>sing-box Package Manager 与 systemd 管理：https://sing-box.sagernet.org/installation/package-manager/</li></ul>
+          </article>
         </div>
       </div>
     </section>
 
     <section id="auxiliary" aria-labelledby="aux-title">
       <div class="section-inner">
+        <div class="section-head">
+          <h2 id="aux-title" data-i18n="aux-title">辅助入口</h2>
+          <p data-i18n="aux-copy">其它文件只做小入口，主内容以分享文档原文为准。</p>
+        </div>
         <div class="aux-strip">
-          <p id="aux-title" data-i18n="aux-copy">辅助入口收在这里，不作为页面主内容。</p>
+          <p data-i18n="aux-note">需要模板或分享规则时，从这里继续查看。</p>
           <div class="aux-links">
             <a href="双跳链路搭建分享文档.md" data-i18n="aux-md">Markdown 原文</a>
             <a href="examples/clash-verge.template.yaml" data-i18n="aux-desktop">桌面模板</a>
@@ -555,7 +1029,7 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span data-i18n="footer-left">2HP - 双跳链路搭建分享文档可视化</span>
+      <span data-i18n="footer-left">2HP - 双跳链路搭建分享文档</span>
       <span data-i18n="footer-right">请负责任使用，并遵守所在地法律、服务商政策和平台条款。</span>
     </div>
   </footer>
@@ -564,56 +1038,24 @@
     (() => {
       const dictionary = {
         zh: {
-          pageTitle: "2HP - 双跳链路搭建分享文档可视化",
-          pageDescription: "双跳链路搭建分享文档的可视化阅读页：只展示流量链路架构，并按原 Markdown 章节结构组织内容。",
-          "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "分享文档可视化", "nav-links-label": "页面导航与语言", "nav-architecture": "流量链路图", "nav-chapters": "文档结构", "nav-checks": "检查点", "nav-doc": "读原文",
-          "hero-eyebrow": "Markdown 内容可视化", "hero-title": "双跳链路搭建分享文档", "hero-copy": "这个页面只做一件事：把分享文档的结构和关键链路可视化。图只画流量如何从本地客户端进入第一跳、经过策略分流，再到第二跳 SOCKS5 出口。", "hero-actions-label": "主要操作", "open-doc": "打开分享文档", "view-architecture": "先看流量链路",
-          "toc-title": "原文结构",
-          "toc-1": "目标架构", "toc-2": "先准备什么", "toc-3": "节点怎么选", "toc-4": "占位符",
-          "toc-5": "第一步：安装 sing-box", "toc-6": "第一步补充：低配 VPS 基础加固", "toc-7": "第二步：配置第二跳 SOCKS5", "toc-8": "第三步：配置第一跳 Hysteria2 + 分流",
-          "toc-9": "第四步：配置 Clash Verge", "toc-10": "第五步：验证", "toc-11": "常见问题", "toc-12": "参考资料",
-          "architecture-title": "流量链路架构图", "architecture-copy": "这张图只表达文档的核心流量路径，不再展示仓库结构、文件地图或其它项目说明。", "route-label": "双跳流量链路架构图", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "本地规则模式先识别 AI、开发、媒体和普通流量。", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "近端 UDP 稳定节点，承接 Hysteria2 入站。", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box 分流", "node-3-copy": "命中敏感域名时转发到第二跳，普通流量可直接兜底。", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 出口", "node-4-copy": "目标区域出口地址，通常只允许第一跳访问。", "rule-1-title": "AI / 开发域名", "rule-1-copy": "显式走双跳代理组，建议 fail-closed，不放 DIRECT。", "rule-2-title": "媒体或高流量", "rule-2-copy": "按文档策略可走本地上游或单独客户端，避免占用第二跳。", "rule-3-title": "普通未匹配流量", "rule-3-copy": "可直连或由第一跳直出，保持日常访问可用性。",
-          "chapters-title": "按分享文档结构阅读", "chapters-copy": "这里不重新发明目录，而是把 Markdown 的章节顺序变成可扫读的卡片，方便先理解全貌再进入原文操作。",
-          "chapter-1-title": "目标架构", "chapter-1-copy": "把本地客户端、第一跳 VPS、第二跳 SOCKS5 和目标网站的流量路径放在开头。", "chapter-1-small": "原文第一节",
-          "chapter-2-title": "先准备什么", "chapter-2-copy": "列出本地客户端、第一跳 VPS、第二跳出口、sing-box、Hysteria2 和端口准备。", "chapter-2-small": "准备清单",
-          "chapter-3-title": "节点怎么选", "chapter-3-copy": "解释第一跳、第二跳和节点地址选择，包含资源基线、IP 类型、认证和白名单。", "chapter-3-small": "含：第一跳选型 / 第二跳选型 / 节点地址",
-          "chapter-4-title": "占位符", "chapter-4-copy": "用 <FIRST_IP>、<HY2_PASSWORD>、<SOCKS_PASS> 等代替真实信息。", "chapter-4-small": "公开分享边界",
-          "chapter-5-title": "第一步：安装 sing-box", "chapter-5-copy": "从安装 sing-box 开始，为后面的入站、出站和路由规则准备运行环境。", "chapter-5-small": "安装基础组件",
-          "chapter-6-title": "第一步补充：低配 VPS 基础加固", "chapter-6-copy": "补充 swap、swappiness、journald 和日志级别等低配机器稳定性设置。", "chapter-6-small": "先稳住机器",
-          "chapter-7-title": "第二步：配置第二跳 SOCKS5", "chapter-7-copy": "在出口机配置 SOCKS5 入站、认证和 direct 出站，让它只承担第二跳出口。", "chapter-7-small": "含：第二跳基础加固",
-          "chapter-8-title": "第三步：配置第一跳 Hysteria2 + 分流", "chapter-8-copy": "第一跳同时承接 Hysteria2 入站和 sing-box 策略路由，决定哪些域名进入第二跳。", "chapter-8-small": "核心流量规则",
-          "chapter-9-title": "第四步：配置 Clash Verge", "chapter-9-copy": "本地导入模板并替换占位符，让客户端只连接第一跳入口。", "chapter-9-small": "客户端落地",
-          "chapter-10-title": "第五步：验证", "chapter-10-copy": "用响应头、客户端日志和第一跳日志确认指定流量真的走到第二跳。", "chapter-10-small": "先验证再信任",
-          "chapter-11-title": "常见问题", "chapter-11-copy": "围绕客户端连不上第一跳、第一跳能连但 AI 没走第二跳这两类问题排障。", "chapter-11-small": "FAQ 排障",
-          "chapter-12-title": "参考资料", "chapter-12-copy": "保留官方文档和相关项目链接，作为读者继续查证和扩展的入口。", "chapter-12-small": "延伸阅读",
-          "checks-title": "文档反复强调的检查点", "checks-copy": "这些不是新内容，而是从分享文档里抽出来的执行重点，用来提醒读者读原文时不要跳过。", "check-1-title": "第二跳不暴露给本地", "check-1-copy": "客户端只写第一跳；第二跳地址只进入第一跳 sing-box 配置。", "check-2-title": "SOCKS5 要有认证和白名单", "check-2-copy": "第二跳端口只允许第一跳 IP 访问，避免被扫到后滥用。", "check-3-title": "敏感域名不要 DIRECT", "check-3-copy": "AI/开发域名命中双跳，失败即关闭，避免静默直连。", "check-4-title": "验证再信任路径", "check-4-copy": "用响应头、客户端日志、第一跳日志确认流量真的去了第二跳。",
-          "aux-copy": "辅助入口收在这里，不作为页面主内容。", "aux-md": "Markdown 原文", "aux-desktop": "桌面模板", "aux-android": "Android 模板", "aux-sharing": "分享规则", "footer-left": "2HP - 双跳链路搭建分享文档可视化", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
+          pageTitle: "2HP - 双跳链路搭建分享文档",
+          pageDescription: "双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。",
+          "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "分享文档可视化", "nav-links-label": "页面导航与语言", "lang-toggle-label": "切换语言",
+          "nav-architecture": "流量链路图", "nav-source": "原文内容", "nav-aux": "辅助入口", "nav-doc": "读原文",
+          "hero-eyebrow": "Markdown 原文可视化", "hero-title": "双跳链路搭建分享文档", "hero-copy": "页面主体直接呈现 Markdown 原文内容，只把排版、代码块、表格和目录做成更适合网页阅读的样子。唯一额外绘制的图是流量链路架构图。", "hero-actions-label": "主要操作", "read-source": "进入原文内容", "view-architecture": "先看流量链路", "toc-title": "原文目录",
+          "architecture-title": "流量链路架构图", "architecture-copy": "这张图只表达原文“目标架构”里的核心流量路径；其它章节直接展示 Markdown 原文内容。", "route-label": "双跳流量链路架构图", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "本地规则模式先识别 AI、开发、媒体和普通流量。", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "近端 UDP 稳定节点，承接 Hysteria2 入站。", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box 分流", "node-3-copy": "命中敏感域名时转发到第二跳，普通流量可直接兜底。", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 出口", "node-4-copy": "目标区域出口地址，通常只允许第一跳访问。",
+          "source-title": "原文内容", "source-copy": "下面不是摘要，也不是重写目录，而是把 Markdown 原文转成网页阅读版。", "article-toc-label": "原文小目录", "article-toc-title": "原文小目录",
+          "aux-title": "辅助入口", "aux-copy": "其它文件只做小入口，主内容以分享文档原文为准。", "aux-note": "需要模板或分享规则时，从这里继续查看。", "aux-md": "Markdown 原文", "aux-desktop": "桌面模板", "aux-android": "Android 模板", "aux-sharing": "分享规则", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
         },
         en: {
-          pageTitle: "2HP - Visualized Double-Hop Setup Guide",
-          pageDescription: "A visual reading page for the double-hop setup guide: one traffic-link architecture diagram plus content organized by the original Markdown structure.",
-          "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Guide visualization", "nav-links-label": "Page navigation and language", "nav-architecture": "Traffic diagram", "nav-chapters": "Document structure", "nav-checks": "Checkpoints", "nav-doc": "Read guide",
-          "hero-eyebrow": "Markdown content visualized", "hero-title": "Double-Hop Setup Guide", "hero-copy": "This page does one job: visualize the structure and key traffic path from the sharing document. The only diagram shows traffic moving from the local client into the first hop, through policy routing, and on to the SOCKS5 exit.", "hero-actions-label": "Primary actions", "open-doc": "Open the guide", "view-architecture": "View traffic link first",
-          "toc-title": "Original structure",
-          "toc-1": "Target architecture", "toc-2": "Prerequisites", "toc-3": "Node selection", "toc-4": "Placeholders",
-          "toc-5": "Step 1: install sing-box", "toc-6": "Step 1 add-on: low-spec VPS hardening", "toc-7": "Step 2: configure second-hop SOCKS5", "toc-8": "Step 3: configure first-hop Hysteria2 + routing",
-          "toc-9": "Step 4: configure Clash Verge", "toc-10": "Step 5: verification", "toc-11": "FAQ", "toc-12": "References",
-          "architecture-title": "Traffic-Link Architecture", "architecture-copy": "This diagram only represents the core traffic path from the document. It no longer shows repository structure, file maps, or project-level explanations.", "route-label": "Double-hop traffic-link architecture diagram", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "Local rule mode identifies AI, developer, media, and ordinary traffic first.", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "A nearby UDP-stable node accepts the Hysteria2 inbound.", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box routing", "node-3-copy": "Matched sensitive domains forward to the second hop; ordinary traffic can fall back directly.", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 egress", "node-4-copy": "The target-region egress address, normally reachable only from the first hop.", "rule-1-title": "AI / developer domains", "rule-1-copy": "Route explicitly through the double-hop group; use fail-closed and avoid DIRECT.", "rule-2-title": "Media or high-volume traffic", "rule-2-copy": "Use local upstream or a separate client where appropriate to avoid burning the second hop.", "rule-3-title": "Ordinary unmatched traffic", "rule-3-copy": "Use direct fallback or first-hop egress to preserve everyday browsing availability.",
-          "chapters-title": "Read by the sharing document structure", "chapters-copy": "This section does not invent a new outline. It turns the Markdown chapter order into scan-friendly cards before readers enter the full guide.",
-          "chapter-1-title": "Target architecture", "chapter-1-copy": "Places the local client, first-hop VPS, second-hop SOCKS5, and target site traffic path at the beginning.", "chapter-1-small": "First guide section",
-          "chapter-2-title": "Prerequisites", "chapter-2-copy": "Lists the local client, first-hop VPS, second-hop egress, sing-box, Hysteria2, and port preparation.", "chapter-2-small": "Preparation list",
-          "chapter-3-title": "Node selection", "chapter-3-copy": "Explains first-hop, second-hop, and node-address choices, including baseline resources, IP type, auth, and allowlist.", "chapter-3-small": "Includes first hop / second hop / address choice",
-          "chapter-4-title": "Placeholders", "chapter-4-copy": "Use <FIRST_IP>, <HY2_PASSWORD>, <SOCKS_PASS>, and similar placeholders instead of real values.", "chapter-4-small": "Public sharing boundary",
-          "chapter-5-title": "Step 1: install sing-box", "chapter-5-copy": "Start by installing sing-box so inbound, outbound, and routing rules have a runtime.", "chapter-5-small": "Install base component",
-          "chapter-6-title": "Step 1 add-on: low-spec VPS hardening", "chapter-6-copy": "Adds swap, swappiness, journald, and log-level settings for low-spec machine stability.", "chapter-6-small": "Stabilize the machine",
-          "chapter-7-title": "Step 2: configure second-hop SOCKS5", "chapter-7-copy": "Configure SOCKS5 inbound, auth, and direct outbound on the egress machine so it only serves as the second hop.", "chapter-7-small": "Includes second-hop hardening",
-          "chapter-8-title": "Step 3: configure first-hop Hysteria2 + routing", "chapter-8-copy": "The first hop accepts Hysteria2 inbound traffic and uses sing-box policy routing to decide which domains enter the second hop.", "chapter-8-small": "Core traffic rules",
-          "chapter-9-title": "Step 4: configure Clash Verge", "chapter-9-copy": "Import the local template and replace placeholders so the client connects only to the first-hop entry.", "chapter-9-small": "Client setup",
-          "chapter-10-title": "Step 5: verification", "chapter-10-copy": "Use response headers, client logs, and first-hop logs to confirm selected traffic really reaches the second hop.", "chapter-10-small": "Verify before trusting",
-          "chapter-11-title": "FAQ", "chapter-11-copy": "Troubleshoots client-to-first-hop failures and cases where the first hop works but AI traffic misses the second hop.", "chapter-11-small": "Recovery notes",
-          "chapter-12-title": "References", "chapter-12-copy": "Keeps official docs and related project links available for readers who want to verify or extend the setup.", "chapter-12-small": "Further reading",
-          "checks-title": "Repeated checkpoints from the guide", "checks-copy": "These are not new content. They are execution reminders extracted from the sharing document so readers do not skip them.", "check-1-title": "Do not expose the second hop locally", "check-1-copy": "The client only stores the first hop; the second-hop address lives in first-hop sing-box config.", "check-2-title": "SOCKS5 needs auth and allowlist", "check-2-copy": "Only allow the first-hop IP to reach the second-hop port to prevent abuse after scans.", "check-3-title": "No DIRECT for sensitive domains", "check-3-copy": "AI/developer domains match the double-hop route and fail closed instead of silently going direct.", "check-4-title": "Verify before trusting the path", "check-4-copy": "Use response headers, client logs, and first-hop logs to confirm traffic actually reaches the second hop.",
-          "aux-copy": "Auxiliary entries live here and are not the main content.", "aux-md": "Markdown source", "aux-desktop": "Desktop template", "aux-android": "Android template", "aux-sharing": "Sharing rules", "footer-left": "2HP - Visualized Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
+          pageTitle: "2HP - Double-Hop Setup Guide",
+          pageDescription: "A visual reading page for the original double-hop setup Markdown, preserving the source content and adding one traffic-link architecture diagram.",
+          "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Guide visualization", "nav-links-label": "Page navigation and language", "lang-toggle-label": "Switch language",
+          "nav-architecture": "Traffic diagram", "nav-source": "Source content", "nav-aux": "Auxiliary", "nav-doc": "Read guide",
+          "hero-eyebrow": "Markdown source visualized", "hero-title": "Double-Hop Setup Guide", "hero-copy": "The page body now presents the original Markdown content directly, with improved web typography for headings, tables, code blocks, and navigation. The only extra drawing is the traffic-link architecture diagram.", "hero-actions-label": "Primary actions", "read-source": "Go to source content", "view-architecture": "View traffic link first", "toc-title": "Source outline",
+          "architecture-title": "Traffic-Link Architecture", "architecture-copy": "This diagram only represents the core traffic path from the source guide's target architecture section. The remaining sections show the original Markdown content directly.", "route-label": "Double-hop traffic-link architecture diagram", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "Local rule mode identifies AI, developer, media, and ordinary traffic first.", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "A nearby UDP-stable node accepts the Hysteria2 inbound.", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box routing", "node-3-copy": "Matched sensitive domains forward to the second hop; ordinary traffic can fall back directly.", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 egress", "node-4-copy": "The target-region egress address, normally reachable only from the first hop.",
+          "source-title": "Source Content", "source-copy": "The section below is not a summary or rewritten outline. It is the original Markdown rendered for web reading.", "article-toc-label": "Source table of contents", "article-toc-title": "Source contents",
+          "aux-title": "Auxiliary Entries", "aux-copy": "Other files stay as compact links. The main content is the source guide itself.", "aux-note": "Open templates or sharing rules from here when needed.", "aux-md": "Markdown source", "aux-desktop": "Desktop template", "aux-android": "Android template", "aux-sharing": "Sharing rules", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
         }
       };
       const storageKey = "2hp-language";
@@ -622,34 +1064,34 @@
       const readStoredLanguage = () => {
         try { const stored = localStorage.getItem(storageKey); return stored === "en" || stored === "zh" ? stored : null; } catch (error) { return null; }
       };
-      const saveLanguage = (language) => {
+      const writeStoredLanguage = (language) => {
         try { localStorage.setItem(storageKey, language); } catch (error) {}
       };
-      const applyLanguage = (language, shouldPersist = true) => {
-        const activeLanguage = language === "en" ? "en" : "zh";
-        const copy = dictionary[activeLanguage];
-        document.documentElement.lang = activeLanguage === "zh" ? "zh-CN" : "en";
-        document.documentElement.dataset.language = activeLanguage;
+      const applyLanguage = (language) => {
+        const copy = dictionary[language] || dictionary.zh;
+        document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+        document.documentElement.dataset.language = language;
         document.title = copy.pageTitle;
         if (metaDescription) metaDescription.setAttribute("content", copy.pageDescription);
-        document.querySelectorAll("[data-i18n]").forEach((element) => {
-          const key = element.dataset.i18n;
-          if (copy[key]) element.textContent = copy[key];
+        document.querySelectorAll("[data-i18n]").forEach((node) => {
+          const key = node.getAttribute("data-i18n");
+          if (copy[key]) node.textContent = copy[key];
         });
-        document.querySelectorAll("[data-i18n-attr]").forEach((element) => {
-          element.dataset.i18nAttr.split(";").forEach((entry) => {
-            const [attr, key] = entry.split(":");
-            if (attr && copy[key]) element.setAttribute(attr, copy[key]);
+        document.querySelectorAll("[data-i18n-attr]").forEach((node) => {
+          const pairs = node.getAttribute("data-i18n-attr").split(";");
+          pairs.forEach((pair) => {
+            const [attr, key] = pair.split(":").map((part) => part && part.trim());
+            if (attr && key && copy[key]) node.setAttribute(attr, copy[key]);
           });
         });
-        if (toggle) {
-          toggle.setAttribute("aria-label", activeLanguage === "zh" ? "切换到英文" : "Switch to Chinese");
-          toggle.setAttribute("aria-pressed", activeLanguage === "zh" ? "false" : "true");
-        }
-        if (shouldPersist) saveLanguage(activeLanguage);
       };
-      applyLanguage(readStoredLanguage() || "zh", false);
-      if (toggle) toggle.addEventListener("click", () => applyLanguage(document.documentElement.dataset.language === "zh" ? "en" : "zh"));
+      let currentLanguage = readStoredLanguage() || (navigator.language && navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en");
+      applyLanguage(currentLanguage);
+      toggle && toggle.addEventListener("click", () => {
+        currentLanguage = currentLanguage === "zh" ? "en" : "zh";
+        writeStoredLanguage(currentLanguage);
+        applyLanguage(currentLanguage);
+      });
     })();
   </script>
 </body>
