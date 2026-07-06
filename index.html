@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-language="zh">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -125,6 +125,39 @@
     }
 
     .button-link.primary:hover { background: #243449; }
+
+    .lang-toggle {
+      min-height: 38px;
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--muted);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 760;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .lang-toggle:hover { border-color: rgba(15, 107, 122, 0.45); }
+
+    .lang-toggle span {
+      min-width: 38px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    html[data-language="zh"] [data-lang-option="zh"],
+    html[data-language="en"] [data-lang-option="en"] {
+      background: var(--deep);
+      color: #fff;
+    }
 
     .hero {
       width: min(var(--max), calc(100% - 32px));
@@ -621,6 +654,10 @@
         <a href="#policy">Policy</a>
         <a href="#security">Security</a>
         <a class="button-link primary" href="https://github.com/AdolphGong/2HP" rel="noreferrer">GitHub</a>
+        <button class="lang-toggle" type="button" aria-label="切换到英文">
+          <span data-lang-option="zh">中文</span>
+          <span data-lang-option="en">EN</span>
+        </button>
       </div>
     </nav>
   </header>
@@ -798,7 +835,7 @@
           </li>
           <li>
             <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
-            <span>Use placeholders such as <code>&lt;FIRST_IP&gt;</code>, <code>&lt;HY2_PASSWORD&gt;</code>, and <code>&lt;SOCKS_PASS&gt;</code> in public files.</span>
+            <span data-i18n-html="security-placeholders">Use placeholders such as <code>&lt;FIRST_IP&gt;</code>, <code>&lt;HY2_PASSWORD&gt;</code>, and <code>&lt;SOCKS_PASS&gt;</code> in public files.</span>
           </li>
           <li>
             <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
@@ -858,5 +895,196 @@
       <span>Use responsibly and follow local laws, provider policies, and service terms.</span>
     </div>
   </footer>
+  <script>
+    (() => {
+      const translations = {
+        meta: {
+          en: {
+            title: "2HP - Double-Hop Proxy Kit",
+            description: "A visual guide for building a Hysteria2 and SOCKS5 double-hop proxy chain with Clash/Mihomo templates."
+          },
+          zh: {
+            title: "2HP - 双跳代理可视化套件",
+            description: "一个用于展示 Hysteria2 与 SOCKS5 双跳代理链路、Clash/Mihomo 模板和安全分享边界的可视化页面。"
+          }
+        },
+        text: {
+          "Skip to content": "跳到正文",
+          "Two-Hop Proxy Kit": "双跳代理套件",
+          "Architecture": "架构",
+          "Policy": "策略",
+          "Security": "安全",
+          "GitHub": "GitHub",
+          "2HP visualizes a safe double-hop proxy kit.": "2HP 用可视化方式展示安全的双跳代理套件。",
+          "A public, placeholder-based guide for Clash and Mihomo clients, a Hysteria2 first hop, and a SOCKS5 exit hop. Built for GitHub Pages, with operational secrets kept out of the shared repository.": "这是一个面向公开分享的占位符版指南，覆盖 Clash/Mihomo 客户端、Hysteria2 首跳和 SOCKS5 出口跳。页面可部署到 GitHub Pages，真实运维密钥不会进入共享仓库。",
+          "Read the guide": "阅读指南",
+          "Desktop template": "桌面模板",
+          "Android template": "Android 模板",
+          "Protocol": "协议",
+          "Hysteria2 over UDP": "基于 UDP 的 Hysteria2",
+          "Router": "路由器",
+          "sing-box policy rules": "sing-box 策略规则",
+          "Client": "客户端",
+          "Clash / Mihomo templates": "Clash / Mihomo 模板",
+          "route.visual": "route.visual",
+          "placeholder-safe": "占位符安全",
+          "LOCAL CLIENT": "本地客户端",
+          "FIRST HOP": "首跳节点",
+          "ROUTE POLICY": "路由策略",
+          "EXIT HOP": "出口节点",
+          "Clash / Mihomo": "Clash / Mihomo",
+          "Rule mode separates AI, developer, media, and ordinary traffic before it leaves the machine.": "规则模式会在流量离开本机前，区分 AI、开发、媒体和普通访问流量。",
+          "Hysteria2 VPS": "Hysteria2 VPS",
+          "The nearby entry node handles UDP access, TLS, and the first layer of route policy.": "近端入口节点负责 UDP 接入、TLS，以及第一层路由策略。",
+          "sing-box rules": "sing-box 规则",
+          "Selected domains continue to the exit hop; ordinary unmatched traffic can use direct fallback.": "指定域名继续走出口跳，未匹配的普通流量可以使用直连兜底。",
+          "SOCKS5 egress": "SOCKS5 出口",
+          "The final hop controls the target-region address while staying hidden behind placeholders.": "最后一跳负责目标区域出口地址，公开页面中只保留占位符。",
+          "What the public repo should explain": "公开仓库应该说明什么",
+          "The useful part is not a private server dump. It is the repeatable pattern: choose hops, lock sensitive routes, keep templates placeholder-only, and verify the result.": "有价值的不是私有服务器配置转储，而是可复用的方法：选择节点、锁定敏感路由、保持模板只含占位符，并验证结果。",
+          "Topology": "拓扑",
+          "Show how local rules, the first hop, the policy router, and the exit hop work together.": "说明本地规则、首跳、策略路由和出口跳如何协同工作。",
+          "View diagram": "查看图示",
+          "Templates": "模板",
+          "Provide importable Clash/Mihomo examples that use placeholders instead of real endpoints.": "提供可导入的 Clash/Mihomo 示例，用占位符替代真实端点。",
+          "Open files": "打开文件",
+          "Safety": "安全边界",
+          "Make it obvious which files are shareable and which files must stay local or encrypted.": "明确哪些文件适合公开，哪些文件必须留在本地或加密保存。",
+          "Run checklist": "查看清单",
+          "Traffic policy at a glance": "流量策略速览",
+          "A double-hop chain is most useful when each traffic class has a clear destination and failure mode.": "当每类流量都有清晰目的地和失败处理方式时，双跳链路才最有价值。",
+          "Traffic class": "流量类别",
+          "Route": "路径",
+          "Rule intent": "规则意图",
+          "Failure behavior": "失败行为",
+          "AI and API domains": "AI 与 API 域名",
+          "DOUBLE HOP": "双跳",
+          "Pin sensitive target domains to the controlled exit region.": "将敏感目标域名固定到可控出口区域。",
+          "FAIL CLOSED": "失败即阻断",
+          "Developer tooling": "开发工具流量",
+          "Keep coding assistants and package/dev surfaces on the same controlled path.": "让编码助手、包管理和开发相关访问保持在同一条可控路径上。",
+          "Media traffic": "媒体流量",
+          "LOCAL UPSTREAM": "本地上游",
+          "Avoid burning the double-hop exit for high-volume streaming.": "避免用高流量视频消耗双跳出口资源。",
+          "Use a separate client or bypass.": "使用单独客户端或绕过。",
+          "Ordinary unmatched traffic": "普通未匹配流量",
+          "DIRECT": "直连",
+          "Keep daily browsing resilient when the proxy chain is degraded.": "当代理链路异常时，保留日常浏览的可用性。",
+          "Direct fallback.": "直连兜底。",
+          "Setup flow": "搭建流程",
+          "Use the guide as a controlled sequence instead of copying a private configuration wholesale.": "把指南当作受控步骤来执行，而不是整份复制私有配置。",
+          "Pick the hops": "选择节点",
+          "Choose a nearby UDP-stable first hop and a target-region SOCKS5 exit.": "选择一个 UDP 稳定的近端首跳，以及目标区域的 SOCKS5 出口。",
+          "Install sing-box": "安装 sing-box",
+          "Run Hysteria2 inbound on the first hop and SOCKS5 outbound policy.": "在首跳上运行 Hysteria2 入站，并配置 SOCKS5 出站策略。",
+          "Lock rules": "锁定规则",
+          "Put sensitive domains before broad fallback rules and avoid DIRECT in fail-closed groups.": "将敏感域名放在宽泛兜底规则之前，并避免在失败即阻断组中使用 DIRECT。",
+          "Import templates": "导入模板",
+          "Replace placeholders locally, then import the desktop or Android YAML.": "先在本地替换占位符，再导入桌面端或 Android YAML。",
+          "Verify route": "验证路径",
+          "Check response headers, client logs, and first-hop logs before trusting the path.": "信任链路前，检查响应头、客户端日志和首跳日志。",
+          "Share the pattern, never the live credentials.": "分享方法，不分享真实凭据。",
+          "2HP is designed as a public documentation repository. Anything that can connect to your actual infrastructure belongs outside Git or in encrypted storage.": "2HP 被设计成公开文档仓库。任何能连接真实基础设施的内容，都应该留在 Git 之外或放进加密存储。",
+          "Keep operational notes, real YAML files, SSH users, and passwords ignored by Git.": "让运维笔记、真实 YAML、SSH 用户和密码始终被 Git 忽略。",
+          "Scan staged content before publishing, not only the working directory.": "发布前扫描已暂存内容，而不只是工作区。",
+          "Rotate any credential that has ever reached a public remote, even briefly.": "任何曾经进入公开远端的凭据，即使只出现过很短时间，也要轮换。",
+          "Repository map": "仓库地图",
+          "The public repo stays small on purpose: a visual page, a guide, share rules, and import templates.": "公开仓库刻意保持小而清晰：一个可视化页面、一份指南、分享规则和导入模板。",
+          "Visual page": "可视化页面",
+          "GitHub Pages entry with the architecture and checklist.": "包含架构图和检查清单的 GitHub Pages 首页。",
+          "Guide": "指南",
+          "Step-by-step setup with placeholders and generic examples.": "带占位符和通用示例的分步搭建说明。",
+          "Desktop and Android Clash/Mihomo YAML starters.": "桌面端和 Android 端 Clash/Mihomo YAML 起始模板。",
+          "Sharing rules": "分享规则",
+          "Clear boundaries for public, private, and sanitized files.": "明确公开文件、私有文件和脱敏文件的边界。",
+          "2HP - Double-Hop Proxy Kit": "2HP - 双跳代理套件",
+          "Use responsibly and follow local laws, provider policies, and service terms.": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
+        },
+        html: {
+          "security-placeholders": {
+            en: "Use placeholders such as <code>&lt;FIRST_IP&gt;</code>, <code>&lt;HY2_PASSWORD&gt;</code>, and <code>&lt;SOCKS_PASS&gt;</code> in public files.",
+            zh: "公开文件统一使用 <code>&lt;FIRST_IP&gt;</code>、<code>&lt;HY2_PASSWORD&gt;</code> 和 <code>&lt;SOCKS_PASS&gt;</code> 这类占位符。"
+          }
+        },
+        attrs: [
+          [".nav", "aria-label", "Primary", "主导航"],
+          [".brand", "aria-label", "2HP home", "2HP 首页"],
+          [".nav-links", "aria-label", "Page sections", "页面导航与语言"],
+          [".hero-actions", "aria-label", "Primary actions", "主要操作"],
+          [".meta-grid", "aria-label", "Project summary", "项目摘要"],
+          [".diagram-panel", "aria-label", "Double-hop route diagram", "双跳链路图"],
+          [".check-list", "aria-label", "Security checklist", "安全检查清单"]
+        ]
+      };
+
+      const storageKey = "2hp-language";
+      const toggle = document.querySelector(".lang-toggle");
+      const metaDescription = document.querySelector('meta[name="description"]');
+
+      const readStoredLanguage = () => {
+        try {
+          const stored = localStorage.getItem(storageKey);
+          return stored === "en" || stored === "zh" ? stored : null;
+        } catch (error) {
+          return null;
+        }
+      };
+
+      const saveLanguage = (language) => {
+        try {
+          localStorage.setItem(storageKey, language);
+        } catch (error) {
+          // Local files can run in browsers with storage disabled; the switch still works for the current page.
+        }
+      };
+
+      const applyLanguage = (language, shouldPersist = true) => {
+        const activeLanguage = language === "en" ? "en" : "zh";
+        document.documentElement.lang = activeLanguage === "zh" ? "zh-CN" : "en";
+        document.documentElement.dataset.language = activeLanguage;
+        document.title = translations.meta[activeLanguage].title;
+        if (metaDescription) {
+          metaDescription.setAttribute("content", translations.meta[activeLanguage].description);
+        }
+
+        document.querySelectorAll("body *").forEach((element) => {
+          if (element.dataset.i18nHtml) {
+            const htmlEntry = translations.html[element.dataset.i18nHtml];
+            if (htmlEntry) element.innerHTML = htmlEntry[activeLanguage];
+            return;
+          }
+
+          if (element.children.length > 0) return;
+
+          const key = element.dataset.i18nKey || element.textContent.trim();
+          if (!translations.text[key]) return;
+
+          element.dataset.i18nKey = key;
+          element.textContent = activeLanguage === "en" ? key : translations.text[key];
+        });
+
+        translations.attrs.forEach(([selector, attr, en, zh]) => {
+          const element = document.querySelector(selector);
+          if (element) element.setAttribute(attr, activeLanguage === "en" ? en : zh);
+        });
+
+        if (toggle) {
+          toggle.setAttribute("aria-label", activeLanguage === "zh" ? "切换到英文" : "Switch to Chinese");
+          toggle.setAttribute("aria-pressed", activeLanguage === "zh" ? "false" : "true");
+        }
+
+        if (shouldPersist) saveLanguage(activeLanguage);
+      };
+
+      const initialLanguage = readStoredLanguage() || "zh";
+      applyLanguage(initialLanguage, false);
+
+      if (toggle) {
+        toggle.addEventListener("click", () => {
+          applyLanguage(document.documentElement.dataset.language === "zh" ? "en" : "zh");
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
