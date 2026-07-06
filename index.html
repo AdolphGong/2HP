@@ -261,9 +261,15 @@
       font-size: 13px;
       font-weight: 780;
       background: #fff;
+      appearance: none;
+      cursor: pointer;
+      font-family: inherit;
     }
     .doc-tab:hover { border-color: rgba(15, 107, 122, 0.32); color: var(--teal); }
-    .doc-tab.active { border-color: var(--deep); background: var(--deep); color: #fff; }
+    .doc-tab.active,
+    .doc-tab[aria-selected="true"] { border-color: var(--deep); background: var(--deep); color: #fff; }
+    .doc-panel[hidden] { display: none; }
+    .doc-panel > h1 { margin-top: 0; }
     .doc-title-row {
       display: grid;
       grid-template-columns: 42px minmax(0, 1fr);
@@ -515,12 +521,13 @@
 
           <article class="markdown-body markdown-doc">
 
-            <nav class="doc-tabs" id="auxiliary" aria-label="辅助入口" data-i18n-attr="aria-label:aux-title">
-              <a class="doc-tab active" href="#source" aria-current="page" data-i18n="aux-md">Markdown 原文</a>
-              <a class="doc-tab" href="examples/clash-verge.template.yaml" data-i18n="aux-desktop">桌面模板</a>
-              <a class="doc-tab" href="examples/clash-android.template.yaml" data-i18n="aux-android">Android/iOS配置模板</a>
+            <nav class="doc-tabs" id="auxiliary" role="tablist" aria-label="辅助入口" data-i18n-attr="aria-label:aux-title">
+              <button class="doc-tab active" type="button" role="tab" aria-selected="true" aria-controls="doc-panel-source" data-doc-tab="source" data-i18n="aux-md">Markdown 原文</button>
+              <button class="doc-tab" type="button" role="tab" aria-selected="false" aria-controls="doc-panel-desktop" data-doc-tab="desktop" data-i18n="aux-desktop">桌面模板</button>
+              <button class="doc-tab" type="button" role="tab" aria-selected="false" aria-controls="doc-panel-android" data-doc-tab="android" data-i18n="aux-android">Android/iOS配置模板</button>
             </nav>
-            <span class="doc-eyebrow">Markdown 原文</span>
+            <section class="doc-panel active" id="doc-panel-source" data-doc-panel="source" role="tabpanel">
+            <span class="doc-eyebrow" data-i18n="aux-md">Markdown 原文</span>
             <div class="doc-title-row">
               <details class="article-toc" aria-label="原文小目录" data-i18n-attr="aria-label:article-toc-label">
                 <summary class="toc-toggle" aria-label="原文小目录" title="原文小目录" data-i18n-attr="aria-label:article-toc-label;title:article-toc-title"><span class="toc-icon" aria-hidden="true"></span></summary>
@@ -963,6 +970,211 @@ rules:
 <ul><li>检查第一跳配置里的 <code>domain_suffix</code> 和 <code>domain_keyword</code>。</li><li>检查第二跳 SOCKS5 地址、账号、密码。</li><li>检查第二跳防火墙是否放行 <code>&lt;FIRST_IP&gt;</code>。</li><li>检查是否被 QUIC/UDP 绕过，必要时继续保留 AI 域名 UDP block 规则。</li></ul>
 <h2 id="md-20-参考资料">参考资料<a class="heading-anchor" href="#md-20-参考资料" aria-label="链接到 参考资料">#</a></h2>
 <ul><li>sing-box Hysteria2 inbound：https://sing-box.sagernet.org/configuration/inbound/hysteria2/</li><li>sing-box SOCKS inbound：https://sing-box.sagernet.org/configuration/inbound/socks/</li><li>sing-box SOCKS outbound：https://sing-box.sagernet.org/configuration/outbound/socks/</li><li>sing-box Route Rule：https://sing-box.sagernet.org/configuration/route/rule/</li><li>sing-box Package Manager 与 systemd 管理：https://sing-box.sagernet.org/installation/package-manager/</li></ul>
+            </section>
+            <section class="doc-panel" id="doc-panel-desktop" data-doc-panel="desktop" role="tabpanel" hidden>
+              <span class="doc-eyebrow" data-i18n="aux-desktop">桌面模板</span>
+              <h1 data-i18n="aux-desktop">桌面模板</h1>
+              <p data-i18n="desktop-template-copy">导入前替换所有 &lt;PLACEHOLDER&gt;，再放进 Clash Verge / Mihomo。</p>
+              <figure class="code-block"><figcaption>yaml</figcaption><pre><code># Clash Verge / Mihomo desktop template
+# Replace every &lt;PLACEHOLDER&gt; before importing.
+
+mixed-port: 7897
+allow-lan: false
+mode: rule
+log-level: info
+
+proxies:
+  - name: DOUBLE-HOP
+    type: hysteria2
+    server: &lt;FIRST_IP&gt;
+    port: &lt;FIRST_PORT&gt;
+    password: &lt;HY2_PASSWORD&gt;
+    sni: &lt;TLS_NAME&gt;
+    skip-cert-verify: true
+
+  # Optional: local media/entertainment upstream.
+  # Keep this only when another local client listens on 127.0.0.1:7890.
+  - name: LOCAL-MEDIA-UPSTREAM
+    type: socks5
+    server: 127.0.0.1
+    port: 7890
+    udp: true
+
+proxy-groups:
+  - name: WORK-AI
+    type: select
+    proxies:
+      - DOUBLE-HOP
+
+  - name: MEDIA
+    type: select
+    proxies:
+      - LOCAL-MEDIA-UPSTREAM
+      - DIRECT
+
+rules:
+  # Media traffic can use a separate local upstream.
+  - DOMAIN-SUFFIX,youtube.com,MEDIA
+  - DOMAIN-SUFFIX,youtu.be,MEDIA
+  - DOMAIN-SUFFIX,youtube-nocookie.com,MEDIA
+  - DOMAIN-SUFFIX,youtubei.googleapis.com,MEDIA
+  - DOMAIN-SUFFIX,youtube.googleapis.com,MEDIA
+  - DOMAIN-SUFFIX,googlevideo.com,MEDIA
+  - DOMAIN-SUFFIX,ytimg.com,MEDIA
+  - DOMAIN-SUFFIX,netflix.com,MEDIA
+  - DOMAIN-SUFFIX,nflxvideo.net,MEDIA
+  - DOMAIN-SUFFIX,nflximg.net,MEDIA
+  - DOMAIN-SUFFIX,twitch.tv,MEDIA
+  - DOMAIN-SUFFIX,ttvnw.net,MEDIA
+
+  # AI/API/developer traffic uses fail-closed double hop.
+  - DOMAIN-SUFFIX,openai.com,WORK-AI
+  - DOMAIN-SUFFIX,chatgpt.com,WORK-AI
+  - DOMAIN-SUFFIX,oaistatic.com,WORK-AI
+  - DOMAIN-SUFFIX,oaiusercontent.com,WORK-AI
+  - DOMAIN-SUFFIX,oaistatsig.com,WORK-AI
+  - DOMAIN-SUFFIX,openai.azure.com,WORK-AI
+  - DOMAIN-SUFFIX,anthropic.com,WORK-AI
+  - DOMAIN-SUFFIX,anthropic.systems,WORK-AI
+  - DOMAIN-SUFFIX,claude.ai,WORK-AI
+  - DOMAIN-SUFFIX,google.com,WORK-AI
+  - DOMAIN-SUFFIX,googleapis.com,WORK-AI
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,WORK-AI
+  - DOMAIN-SUFFIX,ai.google.dev,WORK-AI
+  - DOMAIN-SUFFIX,aistudio.google.com,WORK-AI
+  - DOMAIN-SUFFIX,makersuite.google.com,WORK-AI
+  - DOMAIN-SUFFIX,gemini.google.com,WORK-AI
+  - DOMAIN-SUFFIX,gstatic.com,WORK-AI
+  - DOMAIN-SUFFIX,googleusercontent.com,WORK-AI
+  - DOMAIN-SUFFIX,githubcopilot.com,WORK-AI
+  - DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com,WORK-AI
+  - DOMAIN-SUFFIX,github.com,WORK-AI
+  - DOMAIN-SUFFIX,githubusercontent.com,WORK-AI
+  - DOMAIN-SUFFIX,githubassets.com,WORK-AI
+  - DOMAIN-SUFFIX,github.io,WORK-AI
+  - DOMAIN-SUFFIX,vscode.dev,WORK-AI
+  - DOMAIN-SUFFIX,vscode-cdn.net,WORK-AI
+  - DOMAIN-SUFFIX,visualstudio.com,WORK-AI
+  - DOMAIN-SUFFIX,cursor.com,WORK-AI
+  - DOMAIN-SUFFIX,cursor.sh,WORK-AI
+  - DOMAIN-SUFFIX,anysphere.co,WORK-AI
+  - DOMAIN-SUFFIX,windsurf.com,WORK-AI
+  - DOMAIN-SUFFIX,codeium.com,WORK-AI
+  - DOMAIN-SUFFIX,continue.dev,WORK-AI
+  - DOMAIN-SUFFIX,tabnine.com,WORK-AI
+  - DOMAIN-SUFFIX,sourcegraph.com,WORK-AI
+  - DOMAIN-SUFFIX,replit.com,WORK-AI
+  - DOMAIN-SUFFIX,vercel.com,WORK-AI
+  - DOMAIN-SUFFIX,vercel.app,WORK-AI
+  - DOMAIN-SUFFIX,vercel.live,WORK-AI
+  - DOMAIN-SUFFIX,v0.dev,WORK-AI
+  - DOMAIN-KEYWORD,openai,WORK-AI
+  - DOMAIN-KEYWORD,chatgpt,WORK-AI
+  - DOMAIN-KEYWORD,anthropic,WORK-AI
+  - DOMAIN-KEYWORD,claude,WORK-AI
+  - DOMAIN-KEYWORD,gemini,WORK-AI
+  - DOMAIN-KEYWORD,copilot,WORK-AI
+  - DOMAIN-KEYWORD,codex,WORK-AI
+  - DOMAIN-KEYWORD,cursor,WORK-AI
+  - DOMAIN-KEYWORD,windsurf,WORK-AI
+  - DOMAIN-KEYWORD,codeium,WORK-AI
+  - DOMAIN-KEYWORD,vercel,WORK-AI
+
+  # Use DIRECT for ordinary unmatched traffic.
+  - GEOSITE,cn,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,DIRECT</code></pre></figure>
+            </section>
+            <section class="doc-panel" id="doc-panel-android" data-doc-panel="android" role="tabpanel" hidden>
+              <span class="doc-eyebrow" data-i18n="aux-android">Android/iOS配置模板</span>
+              <h1 data-i18n="aux-android">Android/iOS配置模板</h1>
+              <p data-i18n="android-template-copy">导入前替换所有 &lt;PLACEHOLDER&gt;，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。</p>
+              <figure class="code-block"><figcaption>yaml</figcaption><pre><code># Clash / Mihomo Android template
+# Replace every &lt;PLACEHOLDER&gt; before importing.
+
+mixed-port: 7897
+allow-lan: false
+mode: rule
+log-level: info
+
+proxies:
+  - name: DOUBLE-HOP
+    type: hysteria2
+    server: &lt;FIRST_IP&gt;
+    port: &lt;FIRST_PORT&gt;
+    password: &lt;HY2_PASSWORD&gt;
+    sni: &lt;TLS_NAME&gt;
+    skip-cert-verify: true
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies:
+      - DOUBLE-HOP
+
+rules:
+  # Android has no desktop local upstream by default.
+  - DOMAIN-SUFFIX,youtube.com,DIRECT
+  - DOMAIN-SUFFIX,youtu.be,DIRECT
+  - DOMAIN-SUFFIX,youtube-nocookie.com,DIRECT
+  - DOMAIN-SUFFIX,youtubei.googleapis.com,DIRECT
+  - DOMAIN-SUFFIX,youtube.googleapis.com,DIRECT
+  - DOMAIN-SUFFIX,googlevideo.com,DIRECT
+  - DOMAIN-SUFFIX,ytimg.com,DIRECT
+
+  # AI/API/developer traffic uses fail-closed double hop.
+  - DOMAIN-SUFFIX,openai.com,PROXY
+  - DOMAIN-SUFFIX,chatgpt.com,PROXY
+  - DOMAIN-SUFFIX,oaistatic.com,PROXY
+  - DOMAIN-SUFFIX,oaiusercontent.com,PROXY
+  - DOMAIN-SUFFIX,oaistatsig.com,PROXY
+  - DOMAIN-SUFFIX,openai.azure.com,PROXY
+  - DOMAIN-SUFFIX,anthropic.com,PROXY
+  - DOMAIN-SUFFIX,anthropic.systems,PROXY
+  - DOMAIN-SUFFIX,claude.ai,PROXY
+  - DOMAIN-SUFFIX,google.com,PROXY
+  - DOMAIN-SUFFIX,googleapis.com,PROXY
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,PROXY
+  - DOMAIN-SUFFIX,ai.google.dev,PROXY
+  - DOMAIN-SUFFIX,aistudio.google.com,PROXY
+  - DOMAIN-SUFFIX,makersuite.google.com,PROXY
+  - DOMAIN-SUFFIX,gemini.google.com,PROXY
+  - DOMAIN-SUFFIX,gstatic.com,PROXY
+  - DOMAIN-SUFFIX,googleusercontent.com,PROXY
+  - DOMAIN-SUFFIX,githubcopilot.com,PROXY
+  - DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com,PROXY
+  - DOMAIN-SUFFIX,github.com,PROXY
+  - DOMAIN-SUFFIX,githubusercontent.com,PROXY
+  - DOMAIN-SUFFIX,githubassets.com,PROXY
+  - DOMAIN-SUFFIX,github.io,PROXY
+  - DOMAIN-SUFFIX,vscode.dev,PROXY
+  - DOMAIN-SUFFIX,vscode-cdn.net,PROXY
+  - DOMAIN-SUFFIX,visualstudio.com,PROXY
+  - DOMAIN-SUFFIX,cursor.com,PROXY
+  - DOMAIN-SUFFIX,cursor.sh,PROXY
+  - DOMAIN-SUFFIX,anysphere.co,PROXY
+  - DOMAIN-SUFFIX,windsurf.com,PROXY
+  - DOMAIN-SUFFIX,codeium.com,PROXY
+  - DOMAIN-SUFFIX,continue.dev,PROXY
+  - DOMAIN-SUFFIX,tabnine.com,PROXY
+  - DOMAIN-SUFFIX,sourcegraph.com,PROXY
+  - DOMAIN-SUFFIX,replit.com,PROXY
+  - DOMAIN-KEYWORD,openai,PROXY
+  - DOMAIN-KEYWORD,chatgpt,PROXY
+  - DOMAIN-KEYWORD,anthropic,PROXY
+  - DOMAIN-KEYWORD,claude,PROXY
+  - DOMAIN-KEYWORD,gemini,PROXY
+  - DOMAIN-KEYWORD,copilot,PROXY
+  - DOMAIN-KEYWORD,codex,PROXY
+  - DOMAIN-KEYWORD,cursor,PROXY
+  - DOMAIN-KEYWORD,windsurf,PROXY
+  - DOMAIN-KEYWORD,codeium,PROXY
+
+  # Use DIRECT for ordinary unmatched traffic.
+  - GEOSITE,cn,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,DIRECT</code></pre></figure>
+            </section>
           </article>
         </div>
       </div>
@@ -987,7 +1199,7 @@ rules:
           "nav-architecture": "流量链路图", "nav-source": "原文内容", "nav-aux": "辅助入口", "nav-doc": "读原文", "hero-title": "双跳链路搭建分享文档", "hero-actions-label": "主要操作", "read-source": "进入原文内容", "view-architecture": "链路架构",
           "architecture-title": "流量链路架构图", "architecture-copy": "这张图只表达原文“目标架构”里的核心流量路径；其它章节直接展示 Markdown 原文内容。", "route-label": "双跳流量链路架构图", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "本地规则模式先识别 AI、开发、媒体和普通流量。", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "近端 UDP 稳定节点，承接 Hysteria2 入站。", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box 分流", "node-3-copy": "命中敏感域名时转发到第二跳，普通流量可直接兜底。", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 出口", "node-4-copy": "目标区域出口地址，通常只允许第一跳访问。",
           "source-title": "原文内容", "article-toc-label": "原文小目录", "article-toc-title": "原文小目录",
-          "aux-title": "辅助入口", "aux-md": "Markdown 原文", "aux-desktop": "桌面模板", "aux-android": "Android/iOS配置模板", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
+          "aux-title": "辅助入口", "aux-md": "Markdown 原文", "aux-desktop": "桌面模板", "aux-android": "Android/iOS配置模板", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
         },
         en: {
           pageTitle: "2HP - Double-Hop Setup Guide",
@@ -996,7 +1208,7 @@ rules:
           "nav-architecture": "Traffic diagram", "nav-source": "Source content", "nav-aux": "Auxiliary", "nav-doc": "Read guide", "hero-title": "Double-Hop Setup Guide", "hero-actions-label": "Primary actions", "read-source": "Go to source content", "view-architecture": "Architecture",
           "architecture-title": "Traffic-Link Architecture", "architecture-copy": "This diagram only represents the core traffic path from the source guide's target architecture section. The remaining sections show the original Markdown content directly.", "route-label": "Double-hop traffic-link architecture diagram", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "Local rule mode identifies AI, developer, media, and ordinary traffic first.", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "A nearby UDP-stable node accepts the Hysteria2 inbound.", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box routing", "node-3-copy": "Matched sensitive domains forward to the second hop; ordinary traffic can fall back directly.", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 egress", "node-4-copy": "The target-region egress address, normally reachable only from the first hop.",
           "source-title": "Source Content", "article-toc-label": "Source table of contents", "article-toc-title": "Source contents",
-          "aux-title": "Auxiliary Entries", "aux-md": "Markdown source", "aux-desktop": "Desktop template", "aux-android": "Android/iOS config template", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
+          "aux-title": "Auxiliary Entries", "aux-md": "Markdown source", "aux-desktop": "Desktop template", "aux-android": "Android/iOS config template", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
         }
       };
       const storageKey = "2hp-language";
@@ -1033,6 +1245,31 @@ rules:
         writeStoredLanguage(currentLanguage);
         applyLanguage(currentLanguage);
       });
+
+      const docTabs = Array.from(document.querySelectorAll("[data-doc-tab]"));
+      const docPanels = Array.from(document.querySelectorAll("[data-doc-panel]"));
+      const activateDocPanel = (target, updateHash = true) => {
+        if (!docPanels.some((panel) => panel.dataset.docPanel === target)) return;
+        docTabs.forEach((tab) => {
+          const active = tab.dataset.docTab === target;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        docPanels.forEach((panel) => {
+          const active = panel.dataset.docPanel === target;
+          panel.toggleAttribute("hidden", !active);
+          panel.classList.toggle("active", active);
+        });
+        if (updateHash && window.history && window.history.replaceState) {
+          const hash = target === "source" ? "#source" : `#doc-panel-${target}`;
+          window.history.replaceState(null, "", hash);
+        }
+      };
+      docTabs.forEach((tab) => {
+        tab.addEventListener("click", () => activateDocPanel(tab.dataset.docTab));
+      });
+      const initialDoc = window.location.hash === "#doc-panel-desktop" ? "desktop" : window.location.hash === "#doc-panel-android" ? "android" : "source";
+      activateDocPanel(initialDoc, false);
     })();
   </script>
 </body>
