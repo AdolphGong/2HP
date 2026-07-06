@@ -3,29 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2HP - Double-Hop Proxy Kit</title>
-  <meta name="description" content="A visual guide for building a Hysteria2 and SOCKS5 double-hop proxy chain with Clash/Mihomo templates.">
+  <title>2HP - 双跳链路搭建分享文档</title>
+  <meta name="description" content="2HP 双跳链路搭建分享文档的可视化导读页，聚焦 Hysteria2 首跳、SOCKS5 出口、sing-box 策略与 Clash/Mihomo 模板。">
   <style>
     :root {
       color-scheme: light;
-      --bg: #f6f7f2;
+      --bg: #f4f6f8;
       --band: #ffffff;
       --ink: #111827;
       --muted: #5a6472;
-      --line: #d8ded2;
+      --line: #d6dde5;
       --deep: #182433;
       --teal: #0f6b7a;
       --green: #2f7d5c;
       --amber: #c7791b;
       --red: #a33b43;
       --blue: #315f9e;
+      --soft-blue: #e9f0f7;
+      --soft-green: #e8f3ee;
       --shadow: 0 20px 55px rgba(24, 36, 51, 0.12);
       --radius: 8px;
       --max: 1160px;
     }
 
     * { box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -38,6 +39,7 @@
     }
 
     a { color: inherit; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
 
     .skip-link {
       position: absolute;
@@ -57,15 +59,15 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(246, 247, 242, 0.92);
+      background: rgba(244, 246, 248, 0.94);
       backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(216, 222, 210, 0.9);
+      border-bottom: 1px solid rgba(214, 221, 229, 0.9);
     }
 
     .nav {
       width: min(var(--max), calc(100% - 32px));
-      margin: 0 auto;
       min-height: 68px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -79,6 +81,7 @@
       text-decoration: none;
       font-weight: 760;
       letter-spacing: 0;
+      color: var(--deep);
     }
 
     .brand-mark {
@@ -96,9 +99,9 @@
     .nav-links {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 6px;
       flex-wrap: wrap;
-      justify-content: flex-end;
     }
 
     .nav-links a,
@@ -119,12 +122,9 @@
     .nav-links a:hover,
     .button-link:hover { background: rgba(15, 107, 122, 0.1); }
 
-    .button-link.primary {
-      background: var(--deep);
-      color: #fff;
-    }
-
+    .button-link.primary { background: var(--deep); color: #fff; }
     .button-link.primary:hover { background: #243449; }
+    .button-link.subtle { border: 1px solid var(--line); background: #fff; }
 
     .lang-toggle {
       min-height: 38px;
@@ -145,84 +145,64 @@
     }
 
     .lang-toggle:hover { border-color: rgba(15, 107, 122, 0.45); }
-
-    .lang-toggle span {
-      min-width: 38px;
-      padding: 5px 8px;
-      border-radius: 4px;
-      text-align: center;
-    }
+    .lang-toggle span { min-width: 38px; padding: 5px 8px; border-radius: 4px; text-align: center; }
 
     html[data-language="zh"] [data-lang-option="zh"],
-    html[data-language="en"] [data-lang-option="en"] {
-      background: var(--deep);
-      color: #fff;
-    }
+    html[data-language="en"] [data-lang-option="en"] { background: var(--deep); color: #fff; }
 
     .hero {
       width: min(var(--max), calc(100% - 32px));
       margin: 0 auto;
-      padding: 70px 0 42px;
+      padding: 64px 0 42px;
       display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
-      gap: 52px;
+      grid-template-columns: minmax(0, 0.96fr) minmax(390px, 1.04fr);
+      gap: 48px;
       align-items: center;
     }
 
-    .hero > *,
-    .section-head > *,
-    .security-grid > * { min-width: 0; }
+    .hero > *, .section-head > *, .guide-grid > *, .architecture-grid > * { min-width: 0; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 28px;
+      padding: 4px 9px;
+      border: 1px solid rgba(15, 107, 122, 0.18);
+      border-radius: 5px;
+      background: rgba(15, 107, 122, 0.08);
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 780;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(47, 125, 92, 0.12);
+    }
 
     .hero h1 {
-      margin: 0;
-      max-width: 680px;
-      font-size: clamp(42px, 7vw, 86px);
-      line-height: 0.95;
+      margin: 18px 0 0;
+      max-width: 720px;
+      color: var(--deep);
+      font-size: clamp(42px, 6vw, 78px);
+      line-height: 0.98;
       letter-spacing: 0;
-      color: var(--deep);
     }
 
-    .hero-copy {
-      margin: 24px 0 0;
-      max-width: 620px;
-      font-size: 18px;
-      color: var(--muted);
-    }
+    .hero-copy { margin: 24px 0 0; max-width: 660px; color: var(--muted); font-size: 18px; }
+    .hero-actions { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
 
-    .hero-actions {
-      margin-top: 30px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+    .doc-facts { margin-top: 34px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 720px; }
+    .fact-item { border-top: 2px solid var(--line); padding-top: 12px; }
+    .fact-item strong { display: block; color: var(--deep); font-size: 14px; }
+    .fact-item span { display: block; margin-top: 3px; color: var(--muted); font-size: 13px; }
 
-    .meta-grid {
-      margin-top: 42px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      max-width: 680px;
-    }
-
-    .meta-item {
-      border-top: 2px solid var(--line);
-      padding-top: 12px;
-    }
-
-    .meta-item strong {
-      display: block;
-      color: var(--deep);
-      font-size: 14px;
-    }
-
-    .meta-item span {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .diagram-panel {
+    .doc-panel {
       background: var(--band);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -235,424 +215,142 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       color: var(--muted);
       font-size: 13px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
-    .signal {
+    .doc-path {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      color: var(--green);
-      font-weight: 700;
-    }
-
-    .signal::before {
-      content: "";
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 0 4px rgba(47, 125, 92, 0.12);
-    }
-
-    .route-map {
-      min-height: 380px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      position: relative;
-    }
-
-    .route-card {
-      position: relative;
-      min-height: 154px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
-      background: #fbfcf8;
-      overflow: hidden;
-    }
-
-    .route-card::after {
-      content: "";
-      position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 0;
-      height: 4px;
-      background: var(--accent, var(--teal));
-    }
-
-    .route-card small {
-      display: block;
-      color: var(--muted);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12px;
-    }
-
-    .route-card h2 {
-      margin: 10px 0 8px;
-      font-size: 22px;
-      line-height: 1.15;
-      letter-spacing: 0;
-      color: var(--deep);
-    }
-
-    .route-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .route-card.local { --accent: var(--blue); }
-    .route-card.first { --accent: var(--teal); }
-    .route-card.policy { --accent: var(--amber); }
-    .route-card.exit { --accent: var(--green); }
-
-    .route-line {
-      position: absolute;
-      inset: 64px 45px 84px;
-      pointer-events: none;
-      opacity: 0.9;
-    }
-
-    .route-line path {
-      fill: none;
-      stroke: var(--deep);
-      stroke-width: 2.2;
-      stroke-dasharray: 10 10;
-      animation: dash 3.6s linear infinite;
-    }
-
-    .route-line circle { fill: var(--amber); }
-
-    @keyframes dash {
-      to { stroke-dashoffset: -80; }
-    }
-
-    section {
-      padding: 72px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .section-inner {
-      width: min(var(--max), calc(100% - 32px));
-      margin: 0 auto;
-    }
-
-    .section-head {
-      display: grid;
-      grid-template-columns: minmax(0, 0.55fr) minmax(0, 0.45fr);
-      gap: 36px;
-      align-items: end;
-      margin-bottom: 34px;
-    }
-
-    .section-head h2 {
-      margin: 0;
-      font-size: clamp(30px, 4vw, 52px);
-      line-height: 1.02;
-      letter-spacing: 0;
-      color: var(--deep);
-    }
-
-    .section-head p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 16px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .info-card,
-    .file-card {
-      background: var(--band);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 22px;
-    }
-
-    .info-card h3,
-    .file-card h3 {
-      margin: 0 0 12px;
-      color: var(--deep);
-      font-size: 20px;
-      line-height: 1.2;
-    }
-
-    .info-card p,
-    .file-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .tagline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 18px;
-      color: var(--teal);
-      font-size: 13px;
-      font-weight: 760;
-      text-decoration: none;
-    }
-
-    .policy-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--band);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      display: table;
-    }
-
-    .policy-table th,
-    .policy-table td {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-      vertical-align: top;
-    }
-
-    .policy-table th {
-      color: var(--deep);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0;
-      background: #edf2ec;
-    }
-
-    .policy-table td {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .policy-table tr:last-child td { border-bottom: 0; }
-
-    .route-chip {
-      display: inline-flex;
       min-height: 28px;
-      align-items: center;
-      padding: 4px 9px;
+      padding: 4px 8px;
       border-radius: 5px;
-      color: #fff;
-      background: var(--deep);
-      font-size: 12px;
-      font-weight: 780;
-      white-space: nowrap;
-    }
-
-    .route-chip.ai { background: var(--green); }
-    .route-chip.media { background: var(--blue); }
-    .route-chip.direct { background: var(--amber); color: #111827; }
-    .route-chip.block { background: var(--red); }
-
-    .timeline {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 0;
-      border: 1px solid var(--line);
-      background: var(--band);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .step {
-      min-height: 180px;
-      padding: 22px;
-      border-right: 1px solid var(--line);
-    }
-
-    .step:last-child { border-right: 0; }
-
-    .step-number {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      background: var(--deep);
-      color: #fff;
-      border-radius: 6px;
-      font-weight: 800;
-    }
-
-    .step h3 {
-      margin: 18px 0 8px;
-      font-size: 17px;
-      color: var(--deep);
-      line-height: 1.25;
-    }
-
-    .step p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .security-grid {
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .security-panel {
-      background: var(--deep);
-      color: #fff;
-      border-radius: var(--radius);
-      padding: 28px;
-    }
-
-    .security-panel h2 {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 48px);
-      line-height: 1.05;
-      letter-spacing: 0;
-    }
-
-    .security-panel p {
-      margin: 18px 0 0;
-      color: rgba(255, 255, 255, 0.72);
-    }
-
-    .check-list {
-      display: grid;
-      gap: 12px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .check-list li {
-      display: grid;
-      grid-template-columns: 28px minmax(0, 1fr);
-      gap: 12px;
-      align-items: start;
-      background: var(--band);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 16px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .check-list svg {
-      margin-top: 1px;
-      color: var(--green);
-    }
-
-    .file-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .file-card {
-      min-height: 178px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .file-card code {
-      display: inline-block;
-      color: var(--teal);
-      font-size: 13px;
+      background: var(--soft-blue);
+      color: var(--blue);
+      font-weight: 760;
       word-break: break-word;
     }
 
-    .site-footer {
-      border-top: 1px solid var(--line);
-      padding: 34px 0;
-      color: var(--muted);
-      font-size: 14px;
+    .cover-sheet {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      padding: 22px;
     }
 
-    .footer-inner {
-      width: min(var(--max), calc(100% - 32px));
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+    .cover-sheet::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--blue), var(--teal), var(--green)); }
+    .cover-sheet h2 { margin: 8px 0 10px; color: var(--deep); font-size: 26px; line-height: 1.15; letter-spacing: 0; }
+    .cover-sheet p { margin: 0; color: var(--muted); font-size: 15px; }
 
-    :focus-visible {
-      outline: 3px solid rgba(15, 107, 122, 0.35);
-      outline-offset: 3px;
-    }
+    .cover-list { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
+    .cover-list li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start; color: var(--muted); font-size: 14px; }
+    .cover-list b { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 5px; background: var(--deep); color: #fff; font-size: 12px; }
+
+    section { padding: 72px 0; border-top: 1px solid var(--line); }
+    .section-inner { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; }
+    .section-head { display: grid; grid-template-columns: minmax(0, 0.56fr) minmax(0, 0.44fr); gap: 36px; align-items: end; margin-bottom: 34px; }
+    .section-head h2 { margin: 0; color: var(--deep); font-size: clamp(30px, 4vw, 52px); line-height: 1.04; letter-spacing: 0; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 16px; }
+
+    .guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .guide-card, .aux-card { background: var(--band); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .guide-card h3, .aux-card h3 { margin: 0 0 10px; color: var(--deep); font-size: 20px; line-height: 1.2; letter-spacing: 0; }
+    .guide-card p, .aux-card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .guide-card .tagline, .aux-card .tagline { display: inline-flex; margin-top: 18px; color: var(--teal); font-size: 13px; font-weight: 760; text-decoration: none; }
+
+    .outline { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .outline li { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 16px; align-items: center; min-height: 78px; padding: 16px; background: var(--band); border: 1px solid var(--line); border-radius: var(--radius); }
+    .outline-number { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 6px; background: var(--deep); color: #fff; font-weight: 820; }
+    .outline h3 { margin: 0; color: var(--deep); font-size: 18px; letter-spacing: 0; }
+    .outline p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    .outline-chip { display: inline-flex; min-height: 28px; align-items: center; padding: 4px 9px; border-radius: 5px; background: var(--soft-green); color: var(--green); font-size: 12px; font-weight: 780; white-space: nowrap; }
+
+    .architecture-grid { display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(330px, 0.96fr); gap: 18px; align-items: stretch; }
+    .route-panel, .notes-panel { background: var(--band); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .route-stage { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; min-height: 260px; align-items: center; }
+    .route-line { position: absolute; inset: 78px 9% auto; height: 90px; pointer-events: none; }
+    .route-line path { fill: none; stroke: var(--deep); stroke-width: 2.4; stroke-dasharray: 9 9; animation: dash 3.6s linear infinite; }
+    @keyframes dash { to { stroke-dashoffset: -72; } }
+
+    .route-node { position: relative; z-index: 1; min-height: 162px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--line); border-radius: var(--radius); background: #fbfcfe; padding: 16px; }
+    .route-node small { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    .route-node h3 { margin: 10px 0 8px; color: var(--deep); font-size: 18px; line-height: 1.2; letter-spacing: 0; }
+    .route-node p { margin: 0; color: var(--muted); font-size: 13px; }
+    .node-accent { height: 4px; border-radius: 99px; background: var(--accent, var(--teal)); }
+    .route-node.client { --accent: var(--blue); }
+    .route-node.first { --accent: var(--teal); }
+    .route-node.router { --accent: var(--amber); }
+    .route-node.exit { --accent: var(--green); }
+
+    .notes-panel h3 { margin: 0 0 12px; color: var(--deep); font-size: 22px; line-height: 1.2; }
+    .notes-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .notes-list li { display: grid; grid-template-columns: 8px minmax(0, 1fr); gap: 10px; color: var(--muted); font-size: 14px; }
+    .notes-list li::before { content: ""; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--teal); }
+
+    .safety-band { background: var(--deep); color: #fff; }
+    .safety-band .section-head h2 { color: #fff; }
+    .safety-band .section-head p { color: rgba(255, 255, 255, 0.72); }
+    .safety-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .safety-list li { min-height: 140px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius); padding: 16px; background: rgba(255, 255, 255, 0.06); color: rgba(255, 255, 255, 0.78); font-size: 14px; }
+    .safety-list strong { display: block; margin-bottom: 8px; color: #fff; font-size: 15px; }
+
+    .aux-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .aux-card { min-height: 154px; display: flex; flex-direction: column; justify-content: space-between; }
+    .aux-card code { display: inline-block; margin-top: 16px; color: var(--teal); font-size: 13px; word-break: break-word; }
+
+    .site-footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--muted); font-size: 14px; }
+    .footer-inner { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    :focus-visible { outline: 3px solid rgba(15, 107, 122, 0.35); outline-offset: 3px; }
 
     @media (max-width: 980px) {
-      .hero,
-      .section-head,
-      .security-grid {
-        grid-template-columns: 1fr;
-      }
-
+      .hero, .section-head, .architecture-grid { grid-template-columns: 1fr; }
       .hero { padding-top: 46px; }
-      .route-map { min-height: auto; }
+      .guide-grid, .aux-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .route-stage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .route-line { display: none; }
-      .grid-3,
-      .file-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .timeline { grid-template-columns: 1fr; }
-      .step { border-right: 0; border-bottom: 1px solid var(--line); min-height: auto; }
-      .step:last-child { border-bottom: 0; }
+      .safety-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 680px) {
       .nav, .hero, .section-inner, .footer-inner { width: 100%; max-width: 390px; margin-left: 0; margin-right: auto; padding-left: 16px; padding-right: 16px; }
-      .nav { align-items: flex-start; padding-top: 14px; padding-bottom: 14px; flex-direction: column; }
+      .nav { min-height: 0; align-items: flex-start; padding-top: 14px; padding-bottom: 14px; flex-direction: column; }
       .nav-links { justify-content: flex-start; }
-      .hero { grid-template-columns: 1fr; gap: 32px; }
-      .diagram-panel { width: 100%; max-width: 100%; }
-      .hero h1 { font-size: 34px; line-height: 1.06; overflow-wrap: anywhere; }
+      .hero { gap: 32px; }
+      .hero h1 { font-size: 34px; line-height: 1.08; overflow-wrap: anywhere; }
       .hero-copy { font-size: 16px; overflow-wrap: anywhere; word-break: break-word; }
       .hero-actions { display: grid; grid-template-columns: 1fr; }
       .hero-actions .button-link { width: 100%; }
+      .doc-facts, .guide-grid, .route-stage, .safety-list, .aux-grid { grid-template-columns: 1fr; }
+      .doc-panel, .cover-sheet, .route-panel, .notes-panel { padding: 16px; }
       .panel-topline { align-items: flex-start; flex-direction: column; }
-      .diagram-panel, .route-card { min-width: 0; }
-      .route-card p { overflow-wrap: anywhere; word-break: break-word; }
-      .meta-grid,
-      .route-map,
-      .grid-3,
-      .file-grid { grid-template-columns: 1fr; }
-      .diagram-panel { padding: 16px; }
+      .outline li { grid-template-columns: 44px minmax(0, 1fr); }
+      .outline-chip { grid-column: 2; justify-self: start; }
       section { padding: 52px 0; }
-      .policy-table { display: block; overflow-x: auto; white-space: nowrap; }
-      .policy-table td { white-space: normal; min-width: 180px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-      }
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
     }
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main" data-i18n="skip">跳到正文</a>
 
   <header class="site-header">
-    <nav class="nav" aria-label="Primary">
-      <a class="brand" href="#top" aria-label="2HP home">
+    <nav class="nav" aria-label="主导航" data-i18n-attr="aria-label:nav-label">
+      <a class="brand" href="#top" aria-label="2HP 文档首页" data-i18n-attr="aria-label:brand-label">
         <span class="brand-mark">2HP</span>
-        <span>Two-Hop Proxy Kit</span>
+        <span data-i18n="brand">双跳链路搭建分享文档</span>
       </a>
-      <div class="nav-links" aria-label="Page sections">
-        <a href="#architecture">Architecture</a>
-        <a href="#policy">Policy</a>
-        <a href="#security">Security</a>
+      <div class="nav-links" aria-label="页面导航与语言" data-i18n-attr="aria-label:nav-links-label">
+        <a href="#guide" data-i18n="nav-guide">文档定位</a>
+        <a href="#outline" data-i18n="nav-outline">阅读路径</a>
+        <a href="#architecture" data-i18n="nav-architecture">核心链路</a>
+        <a href="#auxiliary" data-i18n="nav-aux">辅助入口</a>
         <a class="button-link primary" href="https://github.com/AdolphGong/2HP" rel="noreferrer">GitHub</a>
         <button class="lang-toggle" type="button" aria-label="切换到英文">
           <span data-lang-option="zh">中文</span>
@@ -665,356 +363,170 @@
   <main id="main">
     <div id="top" class="hero">
       <div>
-        <h1>2HP visualizes a safe double-hop proxy kit.</h1>
-        <p class="hero-copy">A public, placeholder-based guide for Clash and Mihomo clients, a Hysteria2 first hop, and a SOCKS5 exit hop. Built for GitHub Pages, with operational secrets kept out of the shared repository.</p>
-        <div class="hero-actions" aria-label="Primary actions">
-          <a class="button-link primary" href="双跳链路搭建分享文档.md">Read the guide</a>
-          <a class="button-link" href="examples/clash-verge.template.yaml">Desktop template</a>
-          <a class="button-link" href="examples/clash-android.template.yaml">Android template</a>
+        <span class="eyebrow" data-i18n="hero-eyebrow">主文档导读</span>
+        <h1 data-i18n="hero-title">双跳链路搭建分享文档</h1>
+        <p class="hero-copy" data-i18n="hero-copy">这个页面现在只服务一件事：把《双跳链路搭建分享文档》讲清楚，帮助读者快速理解 Hysteria2 首跳、SOCKS5 出口、sing-box 策略和 Clash/Mihomo 模板之间的关系。</p>
+        <div class="hero-actions" aria-label="主要操作" data-i18n-attr="aria-label:hero-actions-label">
+          <a class="button-link primary" href="https://github.com/AdolphGong/2HP/blob/main/%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E6%90%AD%E5%BB%BA%E5%88%86%E4%BA%AB%E6%96%87%E6%A1%A3.md" rel="noreferrer" data-i18n="open-github-doc">在 GitHub 阅读文档</a>
+          <a class="button-link subtle" href="双跳链路搭建分享文档.md" data-i18n="open-local-doc">打开 Markdown 文件</a>
         </div>
-        <div class="meta-grid" aria-label="Project summary">
-          <div class="meta-item"><strong>Protocol</strong><span>Hysteria2 over UDP</span></div>
-          <div class="meta-item"><strong>Router</strong><span>sing-box policy rules</span></div>
-          <div class="meta-item"><strong>Client</strong><span>Clash / Mihomo templates</span></div>
+        <div class="doc-facts" aria-label="文档摘要" data-i18n-attr="aria-label:facts-label">
+          <div class="fact-item"><strong data-i18n="fact-1-title">主角</strong><span data-i18n="fact-1-copy">双跳搭建指南</span></div>
+          <div class="fact-item"><strong data-i18n="fact-2-title">方法</strong><span data-i18n="fact-2-copy">占位符配置示例</span></div>
+          <div class="fact-item"><strong data-i18n="fact-3-title">边界</strong><span data-i18n="fact-3-copy">不展示真实凭据</span></div>
         </div>
       </div>
 
-      <aside class="diagram-panel" id="architecture" aria-label="Double-hop route diagram">
+      <aside class="doc-panel" aria-label="主文档卡片" data-i18n-attr="aria-label:doc-panel-label">
         <div class="panel-topline">
-          <span>route.visual</span>
-          <span class="signal">placeholder-safe</span>
+          <span data-i18n="panel-label">featured.document</span>
+          <span class="doc-path">双跳链路搭建分享文档.md</span>
         </div>
-        <div class="route-map">
-          <svg class="route-line" viewBox="0 0 420 260" aria-hidden="true">
-            <path d="M 36 58 C 124 28, 194 28, 264 58 S 366 122, 382 188" />
-            <circle cx="36" cy="58" r="5" />
-            <circle cx="264" cy="58" r="5" />
-            <circle cx="382" cy="188" r="5" />
-          </svg>
-          <article class="route-card local">
-            <small>LOCAL CLIENT</small>
-            <h2>Clash / Mihomo</h2>
-            <p>Rule mode separates AI, developer, media, and ordinary traffic before it leaves the machine.</p>
-          </article>
-          <article class="route-card first">
-            <small>FIRST HOP</small>
-            <h2>Hysteria2 VPS</h2>
-            <p>The nearby entry node handles UDP access, TLS, and the first layer of route policy.</p>
-          </article>
-          <article class="route-card policy">
-            <small>ROUTE POLICY</small>
-            <h2>sing-box rules</h2>
-            <p>Selected domains continue to the exit hop; ordinary unmatched traffic can use direct fallback.</p>
-          </article>
-          <article class="route-card exit">
-            <small>EXIT HOP</small>
-            <h2>SOCKS5 egress</h2>
-            <p>The final hop controls the target-region address while staying hidden behind placeholders.</p>
-          </article>
+        <div class="cover-sheet">
+          <h2 data-i18n="cover-title">一份可公开分享的双跳链路实操指南</h2>
+          <p data-i18n="cover-copy">文档不是项目目录说明，而是一条从本地客户端到首跳 VPS、再到目标区域 SOCKS5 出口的可复用搭建路径。</p>
+          <ul class="cover-list" aria-label="文档重点" data-i18n-attr="aria-label:cover-list-label">
+            <li><b>01</b><span data-i18n="cover-item-1">先讲清目标架构和节点选型，再进入命令与配置。</span></li>
+            <li><b>02</b><span data-i18n="cover-item-2">所有真实 IP、密码、用户都用占位符表达。</span></li>
+            <li><b>03</b><span data-i18n="cover-item-3">强调 AI/开发流量的 fail-closed 策略。</span></li>
+            <li><b>04</b><span data-i18n="cover-item-4">最后落到 Clash/Mihomo 模板导入与验证。</span></li>
+          </ul>
         </div>
       </aside>
     </div>
 
-    <section aria-labelledby="why-title">
+    <section id="guide" aria-labelledby="guide-title">
       <div class="section-inner">
         <div class="section-head">
-          <h2 id="why-title">What the public repo should explain</h2>
-          <p>The useful part is not a private server dump. It is the repeatable pattern: choose hops, lock sensitive routes, keep templates placeholder-only, and verify the result.</p>
+          <h2 id="guide-title" data-i18n="guide-title">这页应该如何定位</h2>
+          <p data-i18n="guide-copy">首页不再平均展示整个仓库，而是作为主文档的封面、摘要和阅读导航。读者先进文档，辅助材料只在需要时出现。</p>
         </div>
-        <div class="grid-3">
-          <article class="info-card">
-            <h3>Topology</h3>
-            <p>Show how local rules, the first hop, the policy router, and the exit hop work together.</p>
-            <a class="tagline" href="#architecture">View diagram</a>
+        <div class="guide-grid">
+          <article class="guide-card">
+            <h3 data-i18n="guide-card-1-title">先给结论</h3>
+            <p data-i18n="guide-card-1-copy">让访问者一眼知道这是双跳链路搭建指南，而不是泛泛的项目展示页。</p>
+            <a class="tagline" href="#outline" data-i18n="guide-card-1-link">看阅读路径</a>
           </article>
-          <article class="info-card">
-            <h3>Templates</h3>
-            <p>Provide importable Clash/Mihomo examples that use placeholders instead of real endpoints.</p>
-            <a class="tagline" href="#files">Open files</a>
+          <article class="guide-card">
+            <h3 data-i18n="guide-card-2-title">再给路径</h3>
+            <p data-i18n="guide-card-2-copy">把文档拆成架构、选型、占位符、部署、模板、验证六个阅读块。</p>
+            <a class="tagline" href="#architecture" data-i18n="guide-card-2-link">看核心链路</a>
           </article>
-          <article class="info-card">
-            <h3>Safety</h3>
-            <p>Make it obvious which files are shareable and which files must stay local or encrypted.</p>
-            <a class="tagline" href="#security">Run checklist</a>
+          <article class="guide-card">
+            <h3 data-i18n="guide-card-3-title">最后给边界</h3>
+            <p data-i18n="guide-card-3-copy">仓库里的其它文件只是支撑材料，入口收小，避免抢走主文档注意力。</p>
+            <a class="tagline" href="#auxiliary" data-i18n="guide-card-3-link">看辅助入口</a>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="policy" aria-labelledby="policy-title">
+    <section id="outline" aria-labelledby="outline-title">
       <div class="section-inner">
         <div class="section-head">
-          <h2 id="policy-title">Traffic policy at a glance</h2>
-          <p>A double-hop chain is most useful when each traffic class has a clear destination and failure mode.</p>
+          <h2 id="outline-title" data-i18n="outline-title">主文档阅读路径</h2>
+          <p data-i18n="outline-copy">这份 Markdown 文档内容较长，首页只提炼读者最需要的路线图，把细节留给完整文档承载。</p>
         </div>
-        <table class="policy-table">
-          <thead>
-            <tr>
-              <th scope="col">Traffic class</th>
-              <th scope="col">Route</th>
-              <th scope="col">Rule intent</th>
-              <th scope="col">Failure behavior</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>AI and API domains</td>
-              <td><span class="route-chip ai">DOUBLE HOP</span></td>
-              <td>Pin sensitive target domains to the controlled exit region.</td>
-              <td><span class="route-chip block">FAIL CLOSED</span></td>
-            </tr>
-            <tr>
-              <td>Developer tooling</td>
-              <td><span class="route-chip ai">DOUBLE HOP</span></td>
-              <td>Keep coding assistants and package/dev surfaces on the same controlled path.</td>
-              <td><span class="route-chip block">FAIL CLOSED</span></td>
-            </tr>
-            <tr>
-              <td>Media traffic</td>
-              <td><span class="route-chip media">LOCAL UPSTREAM</span></td>
-              <td>Avoid burning the double-hop exit for high-volume streaming.</td>
-              <td>Use a separate client or bypass.</td>
-            </tr>
-            <tr>
-              <td>Ordinary unmatched traffic</td>
-              <td><span class="route-chip direct">DIRECT</span></td>
-              <td>Keep daily browsing resilient when the proxy chain is degraded.</td>
-              <td>Direct fallback.</td>
-            </tr>
-          </tbody>
-        </table>
+        <ol class="outline">
+          <li><span class="outline-number">1</span><div><h3 data-i18n="outline-1-title">目标架构</h3><p data-i18n="outline-1-copy">本地 Clash/Mihomo 进入首跳 VPS，再按策略转向 SOCKS5 出口。</p></div><span class="outline-chip" data-i18n="outline-1-chip">先理解</span></li>
+          <li><span class="outline-number">2</span><div><h3 data-i18n="outline-2-title">节点选型</h3><p data-i18n="outline-2-copy">首跳看 UDP 稳定和近端质量，出口看目标区域、IP 类型和认证控制。</p></div><span class="outline-chip" data-i18n="outline-2-chip">再选择</span></li>
+          <li><span class="outline-number">3</span><div><h3 data-i18n="outline-3-title">占位符与安全边界</h3><p data-i18n="outline-3-copy">公开文件只出现 &lt;FIRST_IP&gt;、&lt;HY2_PASSWORD&gt;、&lt;SOCKS_PASS&gt; 等占位符。</p></div><span class="outline-chip" data-i18n="outline-3-chip">先脱敏</span></li>
+          <li><span class="outline-number">4</span><div><h3 data-i18n="outline-4-title">服务端部署</h3><p data-i18n="outline-4-copy">安装 sing-box，配置 Hysteria2 入站、SOCKS5 出站和必要的基础加固。</p></div><span class="outline-chip" data-i18n="outline-4-chip">再落地</span></li>
+          <li><span class="outline-number">5</span><div><h3 data-i18n="outline-5-title">客户端模板</h3><p data-i18n="outline-5-copy">替换本地占位符后导入桌面端或 Android YAML 模板。</p></div><span class="outline-chip" data-i18n="outline-5-chip">可导入</span></li>
+          <li><span class="outline-number">6</span><div><h3 data-i18n="outline-6-title">验证与排障</h3><p data-i18n="outline-6-copy">通过响应头、客户端日志、首跳日志确认敏感域名确实走双跳路径。</p></div><span class="outline-chip" data-i18n="outline-6-chip">要验证</span></li>
+        </ol>
       </div>
     </section>
 
-    <section aria-labelledby="flow-title">
+    <section id="architecture" aria-labelledby="architecture-title">
       <div class="section-inner">
         <div class="section-head">
-          <h2 id="flow-title">Setup flow</h2>
-          <p>Use the guide as a controlled sequence instead of copying a private configuration wholesale.</p>
+          <h2 id="architecture-title" data-i18n="architecture-title">文档里的核心链路</h2>
+          <p data-i18n="architecture-copy">图只解释主文档中的链路关系：本地规则、首跳接入、策略分流、出口落地。仓库本身退到背景里。</p>
         </div>
-        <div class="timeline">
-          <article class="step">
-            <div class="step-number">1</div>
-            <h3>Pick the hops</h3>
-            <p>Choose a nearby UDP-stable first hop and a target-region SOCKS5 exit.</p>
-          </article>
-          <article class="step">
-            <div class="step-number">2</div>
-            <h3>Install sing-box</h3>
-            <p>Run Hysteria2 inbound on the first hop and SOCKS5 outbound policy.</p>
-          </article>
-          <article class="step">
-            <div class="step-number">3</div>
-            <h3>Lock rules</h3>
-            <p>Put sensitive domains before broad fallback rules and avoid DIRECT in fail-closed groups.</p>
-          </article>
-          <article class="step">
-            <div class="step-number">4</div>
-            <h3>Import templates</h3>
-            <p>Replace placeholders locally, then import the desktop or Android YAML.</p>
-          </article>
-          <article class="step">
-            <div class="step-number">5</div>
-            <h3>Verify route</h3>
-            <p>Check response headers, client logs, and first-hop logs before trusting the path.</p>
-          </article>
+        <div class="architecture-grid">
+          <div class="route-panel">
+            <div class="route-stage" aria-label="双跳链路图" data-i18n-attr="aria-label:route-stage-label">
+              <svg class="route-line" viewBox="0 0 720 90" aria-hidden="true"><path d="M 20 45 C 120 12, 200 12, 300 45 S 500 78, 700 45" /></svg>
+              <article class="route-node client"><div><small data-i18n="route-client-small">LOCAL</small><h3 data-i18n="route-client-title">Clash / Mihomo</h3><p data-i18n="route-client-copy">本地规则先区分 AI、开发、媒体和普通流量。</p></div><span class="node-accent"></span></article>
+              <article class="route-node first"><div><small data-i18n="route-first-small">FIRST HOP</small><h3 data-i18n="route-first-title">Hysteria2 VPS</h3><p data-i18n="route-first-copy">近端入口负责 UDP、TLS 和首层策略。</p></div><span class="node-accent"></span></article>
+              <article class="route-node router"><div><small data-i18n="route-router-small">POLICY</small><h3 data-i18n="route-router-title">sing-box</h3><p data-i18n="route-router-copy">命中敏感域名后继续转发到出口跳。</p></div><span class="node-accent"></span></article>
+              <article class="route-node exit"><div><small data-i18n="route-exit-small">EXIT</small><h3 data-i18n="route-exit-title">SOCKS5 出口</h3><p data-i18n="route-exit-copy">最终控制目标区域地址和落地网络。</p></div><span class="node-accent"></span></article>
+            </div>
+          </div>
+          <aside class="notes-panel">
+            <h3 data-i18n="notes-title">读文档时抓住三条线</h3>
+            <ul class="notes-list">
+              <li data-i18n="notes-1">客户端只连接首跳，不直接暴露第二跳地址。</li>
+              <li data-i18n="notes-2">第二跳只写在首跳 sing-box 配置中，并用防火墙限制来源。</li>
+              <li data-i18n="notes-3">AI 和开发域名建议失败即阻断，避免悄悄直连。</li>
+              <li data-i18n="notes-4">公开仓库只保留模板和方法，真实配置留在本地。</li>
+            </ul>
+          </aside>
         </div>
       </div>
     </section>
 
-    <section id="security" aria-labelledby="security-title">
-      <div class="section-inner security-grid">
-        <div class="security-panel">
-          <h2 id="security-title">Share the pattern, never the live credentials.</h2>
-          <p>2HP is designed as a public documentation repository. Anything that can connect to your actual infrastructure belongs outside Git or in encrypted storage.</p>
+    <section class="safety-band" aria-labelledby="safety-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 id="safety-title" data-i18n="safety-title">分享前只检查这几个边界</h2>
+          <p data-i18n="safety-copy">主文档可以公开，前提是所有真实运维信息都没有进入 Markdown、模板或历史提交。</p>
         </div>
-        <ul class="check-list" aria-label="Security checklist">
-          <li>
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
-            <span>Keep operational notes, real YAML files, SSH users, and passwords ignored by Git.</span>
-          </li>
-          <li>
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
-            <span data-i18n-html="security-placeholders">Use placeholders such as <code>&lt;FIRST_IP&gt;</code>, <code>&lt;HY2_PASSWORD&gt;</code>, and <code>&lt;SOCKS_PASS&gt;</code> in public files.</span>
-          </li>
-          <li>
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
-            <span>Scan staged content before publishing, not only the working directory.</span>
-          </li>
-          <li>
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6 4.8 12l1.4-1.4 3.2 3.2 8.4-8.4L19.2 6.8z"/></svg>
-            <span>Rotate any credential that has ever reached a public remote, even briefly.</span>
-          </li>
+        <ul class="safety-list">
+          <li><strong data-i18n="safety-1-title">真实 YAML</strong><span data-i18n="safety-1-copy">只留在本地或加密存储，不作为示例文件提交。</span></li>
+          <li><strong data-i18n="safety-2-title">凭据</strong><span data-i18n="safety-2-copy">密码、用户名、token、SSH 信息一律使用占位符。</span></li>
+          <li><strong data-i18n="safety-3-title">网络标识</strong><span data-i18n="safety-3-copy">真实 IP、域名、白名单关系不要出现在公开页面。</span></li>
+          <li><strong data-i18n="safety-4-title">发布检查</strong><span data-i18n="safety-4-copy">推送前检查 staged diff，而不只是看工作区。</span></li>
         </ul>
       </div>
     </section>
 
-    <section id="files" aria-labelledby="files-title">
+    <section id="auxiliary" aria-labelledby="aux-title">
       <div class="section-inner">
         <div class="section-head">
-          <h2 id="files-title">Repository map</h2>
-          <p>The public repo stays small on purpose: a visual page, a guide, share rules, and import templates.</p>
+          <h2 id="aux-title" data-i18n="aux-title">其它内容只做辅助入口</h2>
+          <p data-i18n="aux-copy">这些文件仍然有用，但不应该和主文档抢首页主位。它们收在这里，供需要的人继续查看。</p>
         </div>
-        <div class="file-grid">
-          <article class="file-card">
-            <div>
-              <h3>Visual page</h3>
-              <p>GitHub Pages entry with the architecture and checklist.</p>
-            </div>
-            <code>index.html</code>
-          </article>
-          <article class="file-card">
-            <div>
-              <h3>Guide</h3>
-              <p>Step-by-step setup with placeholders and generic examples.</p>
-            </div>
-            <code>双跳链路搭建分享文档.md</code>
-          </article>
-          <article class="file-card">
-            <div>
-              <h3>Templates</h3>
-              <p>Desktop and Android Clash/Mihomo YAML starters.</p>
-            </div>
-            <code>examples/*.yaml</code>
-          </article>
-          <article class="file-card">
-            <div>
-              <h3>Sharing rules</h3>
-              <p>Clear boundaries for public, private, and sanitized files.</p>
-            </div>
-            <code>SHARING.md</code>
-          </article>
+        <div class="aux-grid">
+          <article class="aux-card"><div><h3>README</h3><p data-i18n="aux-readme-copy">仓库概要和快速说明。</p></div><a class="tagline" href="README.md">README.md</a></article>
+          <article class="aux-card"><div><h3 data-i18n="aux-sharing-title">分享规则</h3><p data-i18n="aux-sharing-copy">公开、私有、脱敏文件边界。</p></div><a class="tagline" href="SHARING.md">SHARING.md</a></article>
+          <article class="aux-card"><div><h3 data-i18n="aux-desktop-title">桌面模板</h3><p data-i18n="aux-desktop-copy">Clash/Mihomo 桌面端起始 YAML。</p></div><a class="tagline" href="examples/clash-verge.template.yaml">clash-verge.template.yaml</a></article>
+          <article class="aux-card"><div><h3 data-i18n="aux-android-title">Android 模板</h3><p data-i18n="aux-android-copy">Android 客户端起始 YAML。</p></div><a class="tagline" href="examples/clash-android.template.yaml">clash-android.template.yaml</a></article>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <span>2HP - Double-Hop Proxy Kit</span>
-      <span>Use responsibly and follow local laws, provider policies, and service terms.</span>
-    </div>
-  </footer>
+  <footer class="site-footer"><div class="footer-inner"><span data-i18n="footer-left">2HP - 双跳链路搭建分享文档</span><span data-i18n="footer-right">请负责任使用，并遵守所在地法律、服务商政策和平台条款。</span></div></footer>
+
   <script>
     (() => {
-      const translations = {
-        meta: {
-          en: {
-            title: "2HP - Double-Hop Proxy Kit",
-            description: "A visual guide for building a Hysteria2 and SOCKS5 double-hop proxy chain with Clash/Mihomo templates."
-          },
-          zh: {
-            title: "2HP - 双跳代理可视化套件",
-            description: "一个用于展示 Hysteria2 与 SOCKS5 双跳代理链路、Clash/Mihomo 模板和安全分享边界的可视化页面。"
-          }
+      const dictionary = {
+        zh: {
+          pageTitle: "2HP - 双跳链路搭建分享文档",
+          pageDescription: "2HP 双跳链路搭建分享文档的可视化导读页，聚焦 Hysteria2 首跳、SOCKS5 出口、sing-box 策略与 Clash/Mihomo 模板。",
+          "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "双跳链路搭建分享文档", "nav-links-label": "页面导航与语言", "nav-guide": "文档定位", "nav-outline": "阅读路径", "nav-architecture": "核心链路", "nav-aux": "辅助入口",
+          "hero-eyebrow": "主文档导读", "hero-title": "双跳链路搭建分享文档", "hero-copy": "这个页面现在只服务一件事：把《双跳链路搭建分享文档》讲清楚，帮助读者快速理解 Hysteria2 首跳、SOCKS5 出口、sing-box 策略和 Clash/Mihomo 模板之间的关系。", "hero-actions-label": "主要操作", "open-github-doc": "在 GitHub 阅读文档", "open-local-doc": "打开 Markdown 文件",
+          "facts-label": "文档摘要", "fact-1-title": "主角", "fact-1-copy": "双跳搭建指南", "fact-2-title": "方法", "fact-2-copy": "占位符配置示例", "fact-3-title": "边界", "fact-3-copy": "不展示真实凭据", "doc-panel-label": "主文档卡片", "panel-label": "featured.document", "cover-title": "一份可公开分享的双跳链路实操指南", "cover-copy": "文档不是项目目录说明，而是一条从本地客户端到首跳 VPS、再到目标区域 SOCKS5 出口的可复用搭建路径。", "cover-list-label": "文档重点", "cover-item-1": "先讲清目标架构和节点选型，再进入命令与配置。", "cover-item-2": "所有真实 IP、密码、用户都用占位符表达。", "cover-item-3": "强调 AI/开发流量的 fail-closed 策略。", "cover-item-4": "最后落到 Clash/Mihomo 模板导入与验证。",
+          "guide-title": "这页应该如何定位", "guide-copy": "首页不再平均展示整个仓库，而是作为主文档的封面、摘要和阅读导航。读者先进文档，辅助材料只在需要时出现。", "guide-card-1-title": "先给结论", "guide-card-1-copy": "让访问者一眼知道这是双跳链路搭建指南，而不是泛泛的项目展示页。", "guide-card-1-link": "看阅读路径", "guide-card-2-title": "再给路径", "guide-card-2-copy": "把文档拆成架构、选型、占位符、部署、模板、验证六个阅读块。", "guide-card-2-link": "看核心链路", "guide-card-3-title": "最后给边界", "guide-card-3-copy": "仓库里的其它文件只是支撑材料，入口收小，避免抢走主文档注意力。", "guide-card-3-link": "看辅助入口",
+          "outline-title": "主文档阅读路径", "outline-copy": "这份 Markdown 文档内容较长，首页只提炼读者最需要的路线图，把细节留给完整文档承载。", "outline-1-title": "目标架构", "outline-1-copy": "本地 Clash/Mihomo 进入首跳 VPS，再按策略转向 SOCKS5 出口。", "outline-1-chip": "先理解", "outline-2-title": "节点选型", "outline-2-copy": "首跳看 UDP 稳定和近端质量，出口看目标区域、IP 类型和认证控制。", "outline-2-chip": "再选择", "outline-3-title": "占位符与安全边界", "outline-3-copy": "公开文件只出现 <FIRST_IP>、<HY2_PASSWORD>、<SOCKS_PASS> 等占位符。", "outline-3-chip": "先脱敏", "outline-4-title": "服务端部署", "outline-4-copy": "安装 sing-box，配置 Hysteria2 入站、SOCKS5 出站和必要的基础加固。", "outline-4-chip": "再落地", "outline-5-title": "客户端模板", "outline-5-copy": "替换本地占位符后导入桌面端或 Android YAML 模板。", "outline-5-chip": "可导入", "outline-6-title": "验证与排障", "outline-6-copy": "通过响应头、客户端日志、首跳日志确认敏感域名确实走双跳路径。", "outline-6-chip": "要验证",
+          "architecture-title": "文档里的核心链路", "architecture-copy": "图只解释主文档中的链路关系：本地规则、首跳接入、策略分流、出口落地。仓库本身退到背景里。", "route-stage-label": "双跳链路图", "route-client-small": "LOCAL", "route-client-title": "Clash / Mihomo", "route-client-copy": "本地规则先区分 AI、开发、媒体和普通流量。", "route-first-small": "FIRST HOP", "route-first-title": "Hysteria2 VPS", "route-first-copy": "近端入口负责 UDP、TLS 和首层策略。", "route-router-small": "POLICY", "route-router-title": "sing-box", "route-router-copy": "命中敏感域名后继续转发到出口跳。", "route-exit-small": "EXIT", "route-exit-title": "SOCKS5 出口", "route-exit-copy": "最终控制目标区域地址和落地网络。", "notes-title": "读文档时抓住三条线", "notes-1": "客户端只连接首跳，不直接暴露第二跳地址。", "notes-2": "第二跳只写在首跳 sing-box 配置中，并用防火墙限制来源。", "notes-3": "AI 和开发域名建议失败即阻断，避免悄悄直连。", "notes-4": "公开仓库只保留模板和方法，真实配置留在本地。",
+          "safety-title": "分享前只检查这几个边界", "safety-copy": "主文档可以公开，前提是所有真实运维信息都没有进入 Markdown、模板或历史提交。", "safety-1-title": "真实 YAML", "safety-1-copy": "只留在本地或加密存储，不作为示例文件提交。", "safety-2-title": "凭据", "safety-2-copy": "密码、用户名、token、SSH 信息一律使用占位符。", "safety-3-title": "网络标识", "safety-3-copy": "真实 IP、域名、白名单关系不要出现在公开页面。", "safety-4-title": "发布检查", "safety-4-copy": "推送前检查 staged diff，而不只是看工作区。",
+          "aux-title": "其它内容只做辅助入口", "aux-copy": "这些文件仍然有用，但不应该和主文档抢首页主位。它们收在这里，供需要的人继续查看。", "aux-readme-copy": "仓库概要和快速说明。", "aux-sharing-title": "分享规则", "aux-sharing-copy": "公开、私有、脱敏文件边界。", "aux-desktop-title": "桌面模板", "aux-desktop-copy": "Clash/Mihomo 桌面端起始 YAML。", "aux-android-title": "Android 模板", "aux-android-copy": "Android 客户端起始 YAML。", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
         },
-        text: {
-          "Skip to content": "跳到正文",
-          "Two-Hop Proxy Kit": "双跳代理套件",
-          "Architecture": "架构",
-          "Policy": "策略",
-          "Security": "安全",
-          "GitHub": "GitHub",
-          "2HP visualizes a safe double-hop proxy kit.": "2HP 用可视化方式展示安全的双跳代理套件。",
-          "A public, placeholder-based guide for Clash and Mihomo clients, a Hysteria2 first hop, and a SOCKS5 exit hop. Built for GitHub Pages, with operational secrets kept out of the shared repository.": "这是一个面向公开分享的占位符版指南，覆盖 Clash/Mihomo 客户端、Hysteria2 首跳和 SOCKS5 出口跳。页面可部署到 GitHub Pages，真实运维密钥不会进入共享仓库。",
-          "Read the guide": "阅读指南",
-          "Desktop template": "桌面模板",
-          "Android template": "Android 模板",
-          "Protocol": "协议",
-          "Hysteria2 over UDP": "基于 UDP 的 Hysteria2",
-          "Router": "路由器",
-          "sing-box policy rules": "sing-box 策略规则",
-          "Client": "客户端",
-          "Clash / Mihomo templates": "Clash / Mihomo 模板",
-          "route.visual": "route.visual",
-          "placeholder-safe": "占位符安全",
-          "LOCAL CLIENT": "本地客户端",
-          "FIRST HOP": "首跳节点",
-          "ROUTE POLICY": "路由策略",
-          "EXIT HOP": "出口节点",
-          "Clash / Mihomo": "Clash / Mihomo",
-          "Rule mode separates AI, developer, media, and ordinary traffic before it leaves the machine.": "规则模式会在流量离开本机前，区分 AI、开发、媒体和普通访问流量。",
-          "Hysteria2 VPS": "Hysteria2 VPS",
-          "The nearby entry node handles UDP access, TLS, and the first layer of route policy.": "近端入口节点负责 UDP 接入、TLS，以及第一层路由策略。",
-          "sing-box rules": "sing-box 规则",
-          "Selected domains continue to the exit hop; ordinary unmatched traffic can use direct fallback.": "指定域名继续走出口跳，未匹配的普通流量可以使用直连兜底。",
-          "SOCKS5 egress": "SOCKS5 出口",
-          "The final hop controls the target-region address while staying hidden behind placeholders.": "最后一跳负责目标区域出口地址，公开页面中只保留占位符。",
-          "What the public repo should explain": "公开仓库应该说明什么",
-          "The useful part is not a private server dump. It is the repeatable pattern: choose hops, lock sensitive routes, keep templates placeholder-only, and verify the result.": "有价值的不是私有服务器配置转储，而是可复用的方法：选择节点、锁定敏感路由、保持模板只含占位符，并验证结果。",
-          "Topology": "拓扑",
-          "Show how local rules, the first hop, the policy router, and the exit hop work together.": "说明本地规则、首跳、策略路由和出口跳如何协同工作。",
-          "View diagram": "查看图示",
-          "Templates": "模板",
-          "Provide importable Clash/Mihomo examples that use placeholders instead of real endpoints.": "提供可导入的 Clash/Mihomo 示例，用占位符替代真实端点。",
-          "Open files": "打开文件",
-          "Safety": "安全边界",
-          "Make it obvious which files are shareable and which files must stay local or encrypted.": "明确哪些文件适合公开，哪些文件必须留在本地或加密保存。",
-          "Run checklist": "查看清单",
-          "Traffic policy at a glance": "流量策略速览",
-          "A double-hop chain is most useful when each traffic class has a clear destination and failure mode.": "当每类流量都有清晰目的地和失败处理方式时，双跳链路才最有价值。",
-          "Traffic class": "流量类别",
-          "Route": "路径",
-          "Rule intent": "规则意图",
-          "Failure behavior": "失败行为",
-          "AI and API domains": "AI 与 API 域名",
-          "DOUBLE HOP": "双跳",
-          "Pin sensitive target domains to the controlled exit region.": "将敏感目标域名固定到可控出口区域。",
-          "FAIL CLOSED": "失败即阻断",
-          "Developer tooling": "开发工具流量",
-          "Keep coding assistants and package/dev surfaces on the same controlled path.": "让编码助手、包管理和开发相关访问保持在同一条可控路径上。",
-          "Media traffic": "媒体流量",
-          "LOCAL UPSTREAM": "本地上游",
-          "Avoid burning the double-hop exit for high-volume streaming.": "避免用高流量视频消耗双跳出口资源。",
-          "Use a separate client or bypass.": "使用单独客户端或绕过。",
-          "Ordinary unmatched traffic": "普通未匹配流量",
-          "DIRECT": "直连",
-          "Keep daily browsing resilient when the proxy chain is degraded.": "当代理链路异常时，保留日常浏览的可用性。",
-          "Direct fallback.": "直连兜底。",
-          "Setup flow": "搭建流程",
-          "Use the guide as a controlled sequence instead of copying a private configuration wholesale.": "把指南当作受控步骤来执行，而不是整份复制私有配置。",
-          "Pick the hops": "选择节点",
-          "Choose a nearby UDP-stable first hop and a target-region SOCKS5 exit.": "选择一个 UDP 稳定的近端首跳，以及目标区域的 SOCKS5 出口。",
-          "Install sing-box": "安装 sing-box",
-          "Run Hysteria2 inbound on the first hop and SOCKS5 outbound policy.": "在首跳上运行 Hysteria2 入站，并配置 SOCKS5 出站策略。",
-          "Lock rules": "锁定规则",
-          "Put sensitive domains before broad fallback rules and avoid DIRECT in fail-closed groups.": "将敏感域名放在宽泛兜底规则之前，并避免在失败即阻断组中使用 DIRECT。",
-          "Import templates": "导入模板",
-          "Replace placeholders locally, then import the desktop or Android YAML.": "先在本地替换占位符，再导入桌面端或 Android YAML。",
-          "Verify route": "验证路径",
-          "Check response headers, client logs, and first-hop logs before trusting the path.": "信任链路前，检查响应头、客户端日志和首跳日志。",
-          "Share the pattern, never the live credentials.": "分享方法，不分享真实凭据。",
-          "2HP is designed as a public documentation repository. Anything that can connect to your actual infrastructure belongs outside Git or in encrypted storage.": "2HP 被设计成公开文档仓库。任何能连接真实基础设施的内容，都应该留在 Git 之外或放进加密存储。",
-          "Keep operational notes, real YAML files, SSH users, and passwords ignored by Git.": "让运维笔记、真实 YAML、SSH 用户和密码始终被 Git 忽略。",
-          "Scan staged content before publishing, not only the working directory.": "发布前扫描已暂存内容，而不只是工作区。",
-          "Rotate any credential that has ever reached a public remote, even briefly.": "任何曾经进入公开远端的凭据，即使只出现过很短时间，也要轮换。",
-          "Repository map": "仓库地图",
-          "The public repo stays small on purpose: a visual page, a guide, share rules, and import templates.": "公开仓库刻意保持小而清晰：一个可视化页面、一份指南、分享规则和导入模板。",
-          "Visual page": "可视化页面",
-          "GitHub Pages entry with the architecture and checklist.": "包含架构图和检查清单的 GitHub Pages 首页。",
-          "Guide": "指南",
-          "Step-by-step setup with placeholders and generic examples.": "带占位符和通用示例的分步搭建说明。",
-          "Desktop and Android Clash/Mihomo YAML starters.": "桌面端和 Android 端 Clash/Mihomo YAML 起始模板。",
-          "Sharing rules": "分享规则",
-          "Clear boundaries for public, private, and sanitized files.": "明确公开文件、私有文件和脱敏文件的边界。",
-          "2HP - Double-Hop Proxy Kit": "2HP - 双跳代理套件",
-          "Use responsibly and follow local laws, provider policies, and service terms.": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
-        },
-        html: {
-          "security-placeholders": {
-            en: "Use placeholders such as <code>&lt;FIRST_IP&gt;</code>, <code>&lt;HY2_PASSWORD&gt;</code>, and <code>&lt;SOCKS_PASS&gt;</code> in public files.",
-            zh: "公开文件统一使用 <code>&lt;FIRST_IP&gt;</code>、<code>&lt;HY2_PASSWORD&gt;</code> 和 <code>&lt;SOCKS_PASS&gt;</code> 这类占位符。"
-          }
-        },
-        attrs: [
-          [".nav", "aria-label", "Primary", "主导航"],
-          [".brand", "aria-label", "2HP home", "2HP 首页"],
-          [".nav-links", "aria-label", "Page sections", "页面导航与语言"],
-          [".hero-actions", "aria-label", "Primary actions", "主要操作"],
-          [".meta-grid", "aria-label", "Project summary", "项目摘要"],
-          [".diagram-panel", "aria-label", "Double-hop route diagram", "双跳链路图"],
-          [".check-list", "aria-label", "Security checklist", "安全检查清单"]
-        ]
+        en: {
+          pageTitle: "2HP - Double-Hop Setup Guide",
+          pageDescription: "A visual landing page for the 2HP double-hop setup guide, focused on Hysteria2 first hop, SOCKS5 egress, sing-box policy, and Clash/Mihomo templates.",
+          "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Double-Hop Setup Guide", "nav-links-label": "Page navigation and language", "nav-guide": "Positioning", "nav-outline": "Reading path", "nav-architecture": "Core route", "nav-aux": "Auxiliary",
+          "hero-eyebrow": "Main document guide", "hero-title": "Double-Hop Setup Guide", "hero-copy": "This page now serves one job: present the double-hop setup guide clearly, so readers can understand how the Hysteria2 first hop, SOCKS5 exit, sing-box policy, and Clash/Mihomo templates fit together.", "hero-actions-label": "Primary actions", "open-github-doc": "Read on GitHub", "open-local-doc": "Open Markdown file",
+          "facts-label": "Document summary", "fact-1-title": "Focus", "fact-1-copy": "Double-hop setup guide", "fact-2-title": "Method", "fact-2-copy": "Placeholder-based examples", "fact-3-title": "Boundary", "fact-3-copy": "No live credentials", "doc-panel-label": "Featured document card", "panel-label": "featured.document", "cover-title": "A shareable hands-on guide for a double-hop route", "cover-copy": "The document is not a project directory tour. It is a reusable path from local client to first-hop VPS, then to the target-region SOCKS5 exit.", "cover-list-label": "Document highlights", "cover-item-1": "Start with the target architecture and node choices before commands and config.", "cover-item-2": "Represent every real IP, password, and user with placeholders.", "cover-item-3": "Highlight fail-closed policy for AI and developer traffic.", "cover-item-4": "End with Clash/Mihomo template import and verification.",
+          "guide-title": "How this page should be positioned", "guide-copy": "The homepage no longer gives every repository file equal weight. It acts as the cover, summary, and reading navigation for the main document, with supporting files appearing only when needed.", "guide-card-1-title": "Lead with the outcome", "guide-card-1-copy": "Make it obvious that this is a double-hop setup guide, not a generic project showcase.", "guide-card-1-link": "View reading path", "guide-card-2-title": "Then show the path", "guide-card-2-copy": "Break the document into architecture, node choice, placeholders, deployment, templates, and verification.", "guide-card-2-link": "View core route", "guide-card-3-title": "Finish with boundaries", "guide-card-3-copy": "Other repository files are supporting material. Their entry points stay compact so they do not compete with the main guide.", "guide-card-3-link": "View auxiliary entries",
+          "outline-title": "Main document reading path", "outline-copy": "The Markdown document is long, so the homepage extracts the route map readers need most and leaves the details inside the full guide.", "outline-1-title": "Target architecture", "outline-1-copy": "Local Clash/Mihomo enters the first-hop VPS, then policy routes selected traffic to the SOCKS5 exit.", "outline-1-chip": "Understand", "outline-2-title": "Node selection", "outline-2-copy": "Use UDP stability and proximity for the first hop; target region, IP type, and auth control for the exit.", "outline-2-chip": "Choose", "outline-3-title": "Placeholders and safety boundary", "outline-3-copy": "Public files only show placeholders such as <FIRST_IP>, <HY2_PASSWORD>, and <SOCKS_PASS>.", "outline-3-chip": "Sanitize", "outline-4-title": "Server deployment", "outline-4-copy": "Install sing-box, configure Hysteria2 inbound, SOCKS5 outbound, and basic hardening.", "outline-4-chip": "Deploy", "outline-5-title": "Client templates", "outline-5-copy": "Replace placeholders locally, then import the desktop or Android YAML template.", "outline-5-chip": "Importable", "outline-6-title": "Verification and recovery", "outline-6-copy": "Use response headers, client logs, and first-hop logs to confirm sensitive domains take the double-hop path.", "outline-6-chip": "Verify",
+          "architecture-title": "The route inside the document", "architecture-copy": "The diagram explains the main guide only: local rules, first-hop access, policy routing, and exit landing. The repository itself stays in the background.", "route-stage-label": "Double-hop route diagram", "route-client-small": "LOCAL", "route-client-title": "Clash / Mihomo", "route-client-copy": "Local rules split AI, developer, media, and ordinary traffic first.", "route-first-small": "FIRST HOP", "route-first-title": "Hysteria2 VPS", "route-first-copy": "The nearby entry handles UDP, TLS, and the first policy layer.", "route-router-small": "POLICY", "route-router-title": "sing-box", "route-router-copy": "Matched sensitive domains continue to the exit hop.", "route-exit-small": "EXIT", "route-exit-title": "SOCKS5 egress", "route-exit-copy": "The final hop controls the target-region address and network.", "notes-title": "Read the guide through three lines", "notes-1": "The client connects only to the first hop and does not expose the second-hop address directly.", "notes-2": "The second hop lives in first-hop sing-box config and should be source-limited by firewall.", "notes-3": "AI and developer domains should fail closed instead of silently falling back to direct.", "notes-4": "The public repo keeps templates and method only; live config stays local.",
+          "safety-title": "Check these boundaries before sharing", "safety-copy": "The main document can be public only if live operational details never enter Markdown, templates, or commit history.", "safety-1-title": "Live YAML", "safety-1-copy": "Keep it local or encrypted. Do not commit it as an example file.", "safety-2-title": "Credentials", "safety-2-copy": "Passwords, users, tokens, and SSH details must be placeholders.", "safety-3-title": "Network identifiers", "safety-3-copy": "Do not publish real IPs, domains, or allowlist relationships.", "safety-4-title": "Publish check", "safety-4-copy": "Review the staged diff before pushing, not only the working tree.",
+          "aux-title": "Other content is now auxiliary", "aux-copy": "These files are still useful, but they should not compete with the main document. They live here as compact secondary entries.", "aux-readme-copy": "Repository overview and quick notes.", "aux-sharing-title": "Sharing rules", "aux-sharing-copy": "Boundaries for public, private, and sanitized files.", "aux-desktop-title": "Desktop template", "aux-desktop-copy": "Starter YAML for desktop Clash/Mihomo clients.", "aux-android-title": "Android template", "aux-android-copy": "Starter YAML for Android clients.", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
+        }
       };
 
       const storageKey = "2hp-language";
@@ -1022,68 +534,36 @@
       const metaDescription = document.querySelector('meta[name="description"]');
 
       const readStoredLanguage = () => {
-        try {
-          const stored = localStorage.getItem(storageKey);
-          return stored === "en" || stored === "zh" ? stored : null;
-        } catch (error) {
-          return null;
-        }
+        try { const stored = localStorage.getItem(storageKey); return stored === "en" || stored === "zh" ? stored : null; } catch (error) { return null; }
       };
-
       const saveLanguage = (language) => {
-        try {
-          localStorage.setItem(storageKey, language);
-        } catch (error) {
-          // Local files can run in browsers with storage disabled; the switch still works for the current page.
-        }
+        try { localStorage.setItem(storageKey, language); } catch (error) {}
       };
-
       const applyLanguage = (language, shouldPersist = true) => {
         const activeLanguage = language === "en" ? "en" : "zh";
+        const copy = dictionary[activeLanguage];
         document.documentElement.lang = activeLanguage === "zh" ? "zh-CN" : "en";
         document.documentElement.dataset.language = activeLanguage;
-        document.title = translations.meta[activeLanguage].title;
-        if (metaDescription) {
-          metaDescription.setAttribute("content", translations.meta[activeLanguage].description);
-        }
-
-        document.querySelectorAll("body *").forEach((element) => {
-          if (element.dataset.i18nHtml) {
-            const htmlEntry = translations.html[element.dataset.i18nHtml];
-            if (htmlEntry) element.innerHTML = htmlEntry[activeLanguage];
-            return;
-          }
-
-          if (element.children.length > 0) return;
-
-          const key = element.dataset.i18nKey || element.textContent.trim();
-          if (!translations.text[key]) return;
-
-          element.dataset.i18nKey = key;
-          element.textContent = activeLanguage === "en" ? key : translations.text[key];
+        document.title = copy.pageTitle;
+        if (metaDescription) metaDescription.setAttribute("content", copy.pageDescription);
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.dataset.i18n;
+          if (copy[key]) element.textContent = copy[key];
         });
-
-        translations.attrs.forEach(([selector, attr, en, zh]) => {
-          const element = document.querySelector(selector);
-          if (element) element.setAttribute(attr, activeLanguage === "en" ? en : zh);
+        document.querySelectorAll("[data-i18n-attr]").forEach((element) => {
+          element.dataset.i18nAttr.split(";").forEach((entry) => {
+            const [attr, key] = entry.split(":");
+            if (attr && copy[key]) element.setAttribute(attr, copy[key]);
+          });
         });
-
         if (toggle) {
           toggle.setAttribute("aria-label", activeLanguage === "zh" ? "切换到英文" : "Switch to Chinese");
           toggle.setAttribute("aria-pressed", activeLanguage === "zh" ? "false" : "true");
         }
-
         if (shouldPersist) saveLanguage(activeLanguage);
       };
-
-      const initialLanguage = readStoredLanguage() || "zh";
-      applyLanguage(initialLanguage, false);
-
-      if (toggle) {
-        toggle.addEventListener("click", () => {
-          applyLanguage(document.documentElement.dataset.language === "zh" ? "en" : "zh");
-        });
-      }
+      applyLanguage(readStoredLanguage() || "zh", false);
+      if (toggle) toggle.addEventListener("click", () => applyLanguage(document.documentElement.dataset.language === "zh" ? "en" : "zh"));
     })();
   </script>
 </body>
