@@ -136,10 +136,7 @@
       width: min(var(--max), calc(100% - 32px));
       margin: 0 auto;
       padding: 58px 0 40px;
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(360px, 0.82fr);
-      gap: 42px;
-      align-items: center;
+      display: block;
     }
     .hero > *, .section-head > *, .route-visual > *, .article-layout > * { min-width: 0; }
     .eyebrow {
@@ -178,42 +175,6 @@
       font-size: 18px;
     }
     .hero-actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
-    .toc-panel {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px;
-    }
-    .toc-panel h2 {
-      margin: 0 0 16px;
-      color: var(--deep);
-      font-size: 22px;
-      line-height: 1.2;
-      letter-spacing: 0;
-    }
-    .toc-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
-    .toc-list li {
-      display: grid;
-      grid-template-columns: 30px minmax(0, 1fr);
-      gap: 8px;
-      align-items: center;
-      min-height: 36px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .toc-list b {
-      width: 26px;
-      height: 26px;
-      display: grid;
-      place-items: center;
-      border-radius: 5px;
-      background: var(--deep);
-      color: #fff;
-      font-size: 12px;
-    }
-    .toc-list a { color: var(--muted); text-decoration: none; }
-    .toc-list a:hover { color: var(--teal); }
     section { padding: 68px 0; border-top: 1px solid var(--line); }
     .section-inner { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; }
     .section-head {
@@ -471,13 +432,12 @@
       .nav, .hero, .section-inner, .footer-inner { width: 100%; max-width: 390px; margin-left: 0; margin-right: auto; padding-left: 16px; padding-right: 16px; }
       .nav { min-height: 0; align-items: flex-start; padding-top: 14px; padding-bottom: 14px; flex-direction: column; }
       .nav-links { justify-content: flex-start; }
-      .toc-list { grid-template-columns: 1fr; }
       .hero { padding-top: 44px; gap: 30px; }
       .hero h1 { font-size: 34px; line-height: 1.08; overflow-wrap: anywhere; }
       .hero-copy { font-size: 16px; overflow-wrap: anywhere; }
       .hero-actions { display: grid; grid-template-columns: 1fr; }
       .hero-actions .button-link { width: 100%; }
-      .toc-panel, .route-visual, .markdown-body, .article-toc { padding: 16px; }
+      .route-visual, .markdown-body, .article-toc { padding: 16px; }
       .route-main { grid-template-columns: 1fr; }
       .markdown-body h1 { font-size: 32px; }
       .markdown-body h2 { font-size: 25px; }
@@ -518,23 +478,6 @@
           <a class="button-link subtle" href="#architecture" data-i18n="view-architecture">先看流量链路</a>
         </div>
       </div>
-      <aside class="toc-panel" aria-labelledby="toc-title">
-        <h2 id="toc-title" data-i18n="toc-title">原文目录</h2>
-        <ol class="toc-list">
-          <li><b>01</b><a href="#md-2-目标架构">目标架构</a></li>
-          <li><b>02</b><a href="#md-3-先准备什么">先准备什么</a></li>
-          <li><b>03</b><a href="#md-4-节点怎么选">节点怎么选</a></li>
-          <li><b>04</b><a href="#md-9-占位符">占位符</a></li>
-          <li><b>05</b><a href="#md-10-第一步：安装-sing-box">第一步：安装 sing-box</a></li>
-          <li><b>06</b><a href="#md-11-第一步补充：低配-vps-基础加固">第一步补充：低配 VPS 基础加固</a></li>
-          <li><b>07</b><a href="#md-12-第二步：配置第二跳-socks5">第二步：配置第二跳 SOCKS5</a></li>
-          <li><b>08</b><a href="#md-14-第三步：配置第一跳-hysteria2-分流">第三步：配置第一跳 Hysteria2 + 分流</a></li>
-          <li><b>09</b><a href="#md-15-第四步：配置-clash-verge">第四步：配置 Clash Verge</a></li>
-          <li><b>10</b><a href="#md-16-第五步：验证">第五步：验证</a></li>
-          <li><b>11</b><a href="#md-17-常见问题">常见问题</a></li>
-          <li><b>12</b><a href="#md-20-参考资料">参考资料</a></li>
-        </ol>
-      </aside>
     </div>
 
     <section id="architecture" aria-labelledby="architecture-title">
@@ -1042,7 +985,7 @@ rules:
           pageDescription: "双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。",
           "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "分享文档可视化", "nav-links-label": "页面导航与语言", "lang-toggle-label": "切换语言",
           "nav-architecture": "流量链路图", "nav-source": "原文内容", "nav-aux": "辅助入口", "nav-doc": "读原文",
-          "hero-eyebrow": "Markdown 原文可视化", "hero-title": "双跳链路搭建分享文档", "hero-copy": "页面主体直接呈现 Markdown 原文内容，只把排版、代码块、表格和目录做成更适合网页阅读的样子。唯一额外绘制的图是流量链路架构图。", "hero-actions-label": "主要操作", "read-source": "进入原文内容", "view-architecture": "先看流量链路", "toc-title": "原文目录",
+          "hero-eyebrow": "Markdown 原文可视化", "hero-title": "双跳链路搭建分享文档", "hero-copy": "页面主体直接呈现 Markdown 原文内容，只把排版、代码块、表格和目录做成更适合网页阅读的样子。唯一额外绘制的图是流量链路架构图。", "hero-actions-label": "主要操作", "read-source": "进入原文内容", "view-architecture": "先看流量链路",
           "architecture-title": "流量链路架构图", "architecture-copy": "这张图只表达原文“目标架构”里的核心流量路径；其它章节直接展示 Markdown 原文内容。", "route-label": "双跳流量链路架构图", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "本地规则模式先识别 AI、开发、媒体和普通流量。", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "近端 UDP 稳定节点，承接 Hysteria2 入站。", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box 分流", "node-3-copy": "命中敏感域名时转发到第二跳，普通流量可直接兜底。", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 出口", "node-4-copy": "目标区域出口地址，通常只允许第一跳访问。",
           "source-title": "原文内容", "source-copy": "下面不是摘要，也不是重写目录，而是把 Markdown 原文转成网页阅读版。", "article-toc-label": "原文小目录", "article-toc-title": "原文小目录",
           "aux-title": "辅助入口", "aux-copy": "其它文件只做小入口，主内容以分享文档原文为准。", "aux-note": "需要模板或分享规则时，从这里继续查看。", "aux-md": "Markdown 原文", "aux-desktop": "桌面模板", "aux-android": "Android 模板", "aux-sharing": "分享规则", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
@@ -1052,7 +995,7 @@ rules:
           pageDescription: "A visual reading page for the original double-hop setup Markdown, preserving the source content and adding one traffic-link architecture diagram.",
           "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Guide visualization", "nav-links-label": "Page navigation and language", "lang-toggle-label": "Switch language",
           "nav-architecture": "Traffic diagram", "nav-source": "Source content", "nav-aux": "Auxiliary", "nav-doc": "Read guide",
-          "hero-eyebrow": "Markdown source visualized", "hero-title": "Double-Hop Setup Guide", "hero-copy": "The page body now presents the original Markdown content directly, with improved web typography for headings, tables, code blocks, and navigation. The only extra drawing is the traffic-link architecture diagram.", "hero-actions-label": "Primary actions", "read-source": "Go to source content", "view-architecture": "View traffic link first", "toc-title": "Source outline",
+          "hero-eyebrow": "Markdown source visualized", "hero-title": "Double-Hop Setup Guide", "hero-copy": "The page body now presents the original Markdown content directly, with improved web typography for headings, tables, code blocks, and navigation. The only extra drawing is the traffic-link architecture diagram.", "hero-actions-label": "Primary actions", "read-source": "Go to source content", "view-architecture": "View traffic link first",
           "architecture-title": "Traffic-Link Architecture", "architecture-copy": "This diagram only represents the core traffic path from the source guide's target architecture section. The remaining sections show the original Markdown content directly.", "route-label": "Double-hop traffic-link architecture diagram", "node-1-small": "LOCAL CLIENT", "node-1-title": "Clash Verge", "node-1-copy": "Local rule mode identifies AI, developer, media, and ordinary traffic first.", "node-2-small": "FIRST HOP", "node-2-title": "Hysteria2 VPS", "node-2-copy": "A nearby UDP-stable node accepts the Hysteria2 inbound.", "node-3-small": "POLICY ROUTER", "node-3-title": "sing-box routing", "node-3-copy": "Matched sensitive domains forward to the second hop; ordinary traffic can fall back directly.", "node-4-small": "EXIT HOP", "node-4-title": "SOCKS5 egress", "node-4-copy": "The target-region egress address, normally reachable only from the first hop.",
           "source-title": "Source Content", "source-copy": "The section below is not a summary or rewritten outline. It is the original Markdown rendered for web reading.", "article-toc-label": "Source table of contents", "article-toc-title": "Source contents",
           "aux-title": "Auxiliary Entries", "aux-copy": "Other files stay as compact links. The main content is the source guide itself.", "aux-note": "Open templates or sharing rules from here when needed.", "aux-md": "Markdown source", "aux-desktop": "Desktop template", "aux-android": "Android template", "aux-sharing": "Sharing rules", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
