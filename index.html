@@ -93,25 +93,6 @@
       flex-wrap: wrap;
       gap: 6px;
     }
-    .nav-links a,
-    .button-link {
-      min-height: 38px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      color: var(--deep);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .nav-links a:hover,
-    .button-link:hover { background: rgba(15, 107, 122, 0.1); }
-    .button-link.primary { background: var(--deep); color: #fff; }
-    .button-link.primary:hover { background: #25364b; }
-    .button-link.subtle { border: 1px solid var(--line); background: #fff; }
     .lang-toggle {
       min-height: 38px;
       display: inline-grid;
@@ -133,6 +114,7 @@
     html[data-language="zh"] [data-lang-option="zh"],
     html[data-language="en"] [data-lang-option="en"] { background: var(--deep); color: #fff; }
     .section-head > *, .route-visual > *, .article-layout > * { min-width: 0; }
+    main, section { scroll-margin-top: 96px; }
     section { padding: 68px 0; border-top: 1px solid var(--line); }
     .section-inner { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; }
     .section-head {
@@ -391,6 +373,7 @@
       .markdown-body h1 { font-size: 32px; }
       .markdown-body h2 { font-size: 25px; }
       .markdown-body h3 { font-size: 20px; }
+      main, section { scroll-margin-top: 180px; }
       section { padding: 50px 0; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -406,11 +389,7 @@
         <span class="brand-mark">2HP</span>
         <span data-i18n="brand">双跳链路搭建教程</span>
       </a>
-      <div class="nav-links" aria-label="页面导航与语言" data-i18n-attr="aria-label:nav-links-label">
-        <a href="#architecture" data-i18n="nav-architecture">流量链路图</a>
-        <a href="#source" data-i18n="nav-source">原文内容</a>
-        <a href="#auxiliary" data-i18n="nav-aux">辅助入口</a>
-        <a class="button-link primary" href="双跳链路搭建分享文档.md" data-i18n="nav-doc">读原文</a>
+      <div class="nav-links">
         <button class="lang-toggle" type="button" aria-label="切换语言" data-i18n-attr="aria-label:lang-toggle-label"><span data-lang-option="zh">中文</span><span data-lang-option="en">EN</span></button>
       </div>
     </nav>
@@ -421,7 +400,7 @@
     <section id="architecture" aria-labelledby="architecture-title">
       <div class="section-inner">
         <div class="section-head">
-          <h2 id="architecture-title" data-i18n="architecture-title">流量链路架构图</h2>
+          <h2 id="architecture-title" data-i18n="architecture-title">流量链路图</h2>
           <p data-i18n="architecture-copy">这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。</p>
         </div>
         <div class="route-visual" aria-label="本机 Clash Verge 到目标网站的双跳链路图" data-i18n-attr="aria-label:route-label">
@@ -436,11 +415,8 @@
       </div>
     </section>
 
-    <section id="source" class="article-section" aria-labelledby="source-title">
+    <section id="source" class="article-section">
       <div class="section-inner">
-        <div class="section-head compact">
-          <h2 id="source-title" data-i18n="source-title">原文内容</h2>
-        </div>
         <div class="article-layout">
 
           <article class="markdown-body markdown-doc">
@@ -1093,19 +1069,15 @@ rules:
         zh: {
           pageTitle: "2HP - 双跳链路搭建分享文档",
           pageDescription: "双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。",
-          "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "双跳链路搭建教程", "nav-links-label": "页面导航与语言", "lang-toggle-label": "切换语言",
-          "nav-architecture": "流量链路图", "nav-source": "原文内容", "nav-aux": "辅助入口", "nav-doc": "读原文",
-          "architecture-title": "流量链路架构图", "architecture-copy": "这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。", "route-label": "本机 Clash Verge 到目标网站的双跳链路图", "node-1-small": "LOCAL DEVICE", "node-1-title": "本机 Clash Verge", "node-1-copy": "本机客户端发起规则代理，把需要双跳的流量送入首段节点。", "node-2-small": "FIRST HOP", "node-2-title": "首段节点", "node-2-copy": "Hysteria2 入站承接本机流量，并继续转发到尾段节点。", "node-3-small": "US EXIT", "node-3-title": "尾段节点（美国 IP）", "node-3-copy": "作为美国出口 IP，负责最终落地访问。", "node-4-small": "TARGET SITE", "node-4-title": "目标网站", "node-4-copy": "目标网站只看到尾段节点的美国 IP。",
-          "source-title": "原文内容",
+          "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "双跳链路搭建教程", "lang-toggle-label": "切换语言",
+          "architecture-title": "流量链路图", "architecture-copy": "这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。", "route-label": "本机 Clash Verge 到目标网站的双跳链路图", "node-1-small": "LOCAL DEVICE", "node-1-title": "本机 Clash Verge", "node-1-copy": "本机客户端发起规则代理，把需要双跳的流量送入首段节点。", "node-2-small": "FIRST HOP", "node-2-title": "首段节点", "node-2-copy": "Hysteria2 入站承接本机流量，并继续转发到尾段节点。", "node-3-small": "US EXIT", "node-3-title": "尾段节点（美国 IP）", "node-3-copy": "作为美国出口 IP，负责最终落地访问。", "node-4-small": "TARGET SITE", "node-4-title": "目标网站", "node-4-copy": "目标网站只看到尾段节点的美国 IP。",
           "aux-title": "辅助入口", "aux-md": "搭建教程", "aux-desktop": "桌面配置模板", "aux-android": "Android/iOS配置模板", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
         },
         en: {
           pageTitle: "2HP - Double-Hop Setup Guide",
           pageDescription: "A visual reading page for the original double-hop setup Markdown, preserving the source content and adding one traffic-link architecture diagram.",
-          "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Double-Hop Setup Tutorial", "nav-links-label": "Page navigation and language", "lang-toggle-label": "Switch language",
-          "nav-architecture": "Traffic diagram", "nav-source": "Source content", "nav-aux": "Auxiliary", "nav-doc": "Read guide",
-          "architecture-title": "Traffic-Link Architecture", "architecture-copy": "This diagram shows the actual path from local Clash Verge to the first hop, the U.S. exit hop, and the target website.", "route-label": "Double-hop path from local Clash Verge to the target website", "node-1-small": "LOCAL DEVICE", "node-1-title": "Local Clash Verge", "node-1-copy": "The local client starts rule-based proxying and sends double-hop traffic to the first hop.", "node-2-small": "FIRST HOP", "node-2-title": "First-hop node", "node-2-copy": "The Hysteria2 inbound receives local traffic and forwards it to the tail node.", "node-3-small": "US EXIT", "node-3-title": "Tail node (U.S. IP)", "node-3-copy": "This node provides the U.S. egress IP for the final visit.", "node-4-small": "TARGET SITE", "node-4-title": "Target website", "node-4-copy": "The website sees the U.S. IP of the tail node.",
-          "source-title": "Source Content",
+          "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Double-Hop Setup Tutorial", "lang-toggle-label": "Switch language",
+          "architecture-title": "Traffic Diagram", "architecture-copy": "This diagram shows the actual path from local Clash Verge to the first hop, the U.S. exit hop, and the target website.", "route-label": "Double-hop path from local Clash Verge to the target website", "node-1-small": "LOCAL DEVICE", "node-1-title": "Local Clash Verge", "node-1-copy": "The local client starts rule-based proxying and sends double-hop traffic to the first hop.", "node-2-small": "FIRST HOP", "node-2-title": "First-hop node", "node-2-copy": "The Hysteria2 inbound receives local traffic and forwards it to the tail node.", "node-3-small": "US EXIT", "node-3-title": "Tail node (U.S. IP)", "node-3-copy": "This node provides the U.S. egress IP for the final visit.", "node-4-small": "TARGET SITE", "node-4-title": "Target website", "node-4-copy": "The website sees the U.S. IP of the tail node.",
           "aux-title": "Auxiliary Entries", "aux-md": "Setup guide", "aux-desktop": "Desktop config template", "aux-android": "Android/iOS config template", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
         }
       };
