@@ -31,7 +31,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html README.md SHARING.md LICENSE .nojekyll 双跳链路搭建分享文档.md _site/
+          cp index.html LICENSE .nojekyll _site/
+          cp *.md _site/
           cp -R examples _site/
 
       - name: Upload artifact
