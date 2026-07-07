@@ -133,7 +133,7 @@
     }
     .section-head p { margin: 0; color: var(--muted); font-size: 16px; }
     .legal-note {
-      margin-top: 12px;
+      margin: 0;
       padding: 10px 12px;
       border-left: 3px solid var(--amber);
       border-radius: 6px;
@@ -143,6 +143,7 @@
       line-height: 1.55;
       font-weight: 700;
     }
+    .architecture-legal-note { margin-bottom: 24px; }
     .section-head.compact { display: block; }
     .route-visual {
       background: var(--surface);
@@ -475,12 +476,10 @@
 
     <section id="architecture" aria-labelledby="architecture-title">
       <div class="section-inner">
+        <p class="legal-note architecture-legal-note" data-i18n="legal-note">遵纪守法，此链路专为学术研究搭建，若用做其它非法用途，后果自负！！！</p>
         <div class="section-head">
           <h2 id="architecture-title" data-i18n="architecture-title">流量链路图</h2>
-          <div>
-            <p data-i18n="architecture-copy">这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。</p>
-            <p class="legal-note" data-i18n="legal-note">遵纪守法，此链路专为学术研究搭建，若用做其它非法用途，后果自负！！！</p>
-          </div>
+          <p data-i18n="architecture-copy">这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。</p>
         </div>
         <div class="route-visual" aria-label="本机 Clash Verge 到目标网站的双跳链路图" data-i18n-attr="aria-label:route-label">
           <div class="route-main">
