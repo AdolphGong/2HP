@@ -436,7 +436,76 @@
       color: var(--muted);
     }
     .site-footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); font-size: 14px; }
-    .footer-inner { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .footer-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-copy { display: flex; flex-direction: column; gap: 6px; }
+    .footer-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .footer-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--deep);
+      font: inherit;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .footer-button:hover { border-color: #b9c9d7; background: #f8fbfc; }
+    .footer-button.primary { border-color: var(--deep); background: var(--deep); color: #fff; }
+    .footer-button.primary:hover { background: #1b2c43; }
+    .coffee-modal[hidden] { display: none; }
+    .coffee-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(11, 24, 43, 0.58);
+    }
+    .coffee-modal-panel {
+      width: min(380px, 100%);
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+    }
+    .coffee-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .coffee-modal h2 { margin: 0 0 8px; color: var(--deep); font-size: 24px; line-height: 1.16; }
+    .coffee-modal p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .coffee-close {
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f8fbfc;
+      color: var(--deep);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .coffee-close:hover { background: #eef4f7; }
+    .coffee-qr {
+      display: block;
+      width: min(280px, 100%);
+      margin: 18px auto 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    body.modal-open { overflow: hidden; }
     :focus-visible { outline: 3px solid rgba(15, 107, 122, 0.35); outline-offset: 3px; }
     @media (max-width: 980px) {
       .section-head { grid-template-columns: 1fr; }
@@ -445,6 +514,11 @@
     }
     @media (max-width: 680px) {
       .nav, .section-inner, .footer-inner { width: 100%; max-width: 390px; margin-left: 0; margin-right: auto; padding-left: 16px; padding-right: 16px; }
+      .footer-inner { align-items: flex-start; }
+      .footer-actions { width: 100%; }
+      .footer-button { flex: 1 1 auto; }
+      .coffee-modal { align-items: flex-start; padding: 72px 16px 16px; }
+      .coffee-modal-panel { padding: 16px; }
       .nav { min-height: 0; align-items: flex-start; padding-top: 14px; padding-bottom: 14px; flex-direction: column; }
       .nav-links { justify-content: flex-start; }
       .route-visual, .markdown-body { padding: 16px; }
@@ -1158,10 +1232,29 @@ rules:
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span data-i18n="footer-left">2HP - 双跳链路搭建分享文档</span>
-      <span data-i18n="footer-right">请负责任使用，并遵守所在地法律、服务商政策和平台条款。</span>
+      <div class="footer-copy">
+        <span data-i18n="footer-left">2HP - 双跳链路搭建分享文档</span>
+        <span data-i18n="footer-right">请负责任使用，并遵守所在地法律、服务商政策和平台条款。</span>
+      </div>
+      <div class="footer-actions" aria-label="页脚操作" data-i18n-attr="aria-label:footer-actions-label">
+        <button class="footer-button primary" type="button" data-coffee-open data-i18n="footer-coffee">Buy me a coffee</button>
+        <a class="footer-button" href="https://www.mustryit.com/" target="_blank" rel="noopener noreferrer" data-i18n="footer-author">了解作者</a>
+      </div>
     </div>
   </footer>
+
+  <div class="coffee-modal" data-coffee-modal hidden role="dialog" aria-modal="true" aria-labelledby="coffee-title">
+    <div class="coffee-modal-panel">
+      <div class="coffee-modal-head">
+        <div>
+          <h2 id="coffee-title" data-i18n="coffee-title">Buy me a coffee</h2>
+          <p data-i18n="coffee-copy">如果这份文档帮到了你，可以扫码支持一下。</p>
+        </div>
+        <button class="coffee-close" type="button" data-coffee-close aria-label="关闭赞助弹窗" data-i18n="coffee-close" data-i18n-attr="aria-label:coffee-close-label">关闭</button>
+      </div>
+      <img class="coffee-qr" src="./%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg" alt="微信收款二维码" data-i18n-attr="alt:coffee-qr-alt">
+    </div>
+  </div>
 
   <script>
     (() => {
@@ -1171,14 +1264,14 @@ rules:
           pageDescription: "双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。",
           "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "双跳链路搭建教程", "lang-toggle-label": "切换语言",
           "architecture-title": "流量链路图", "architecture-copy": "这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。", "legal-note": "遵纪守法，此链路专为学术研究搭建，若用做其它非法用途，后果自负！！！", "route-label": "本机 Clash Verge 到目标网站的双跳链路图", "node-1-small": "LOCAL DEVICE", "node-1-title": "本机 Clash Verge", "node-1-copy": "本机客户端发起规则代理，把需要双跳的流量送入首段节点。", "node-2-small": "FIRST HOP", "node-2-title": "首段节点", "node-2-copy": "Hysteria2 入站承接本机流量，并继续转发到尾段节点。", "node-3-small": "US EXIT", "node-3-title": "尾段节点（美国 IP）", "node-3-copy": "作为美国出口 IP，负责最终落地访问。", "node-4-small": "TARGET SITE", "node-4-title": "目标网站", "node-4-copy": "目标网站只看到尾段节点的美国 IP。",
-          "aux-title": "辅助入口", "aux-md": "搭建教程", "aux-desktop": "桌面配置模板", "aux-android": "Android/iOS配置模板", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "download-md": "下载 Markdown", "code-copy": "复制", "code-copied": "已复制", "code-copy-failed": "复制失败", "code-copy-label": "复制代码块", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。"
+          "aux-title": "辅助入口", "aux-md": "搭建教程", "aux-desktop": "桌面配置模板", "aux-android": "Android/iOS配置模板", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "download-md": "下载 Markdown", "code-copy": "复制", "code-copied": "已复制", "code-copy-failed": "复制失败", "code-copy-label": "复制代码块", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。", "footer-actions-label": "页脚操作", "footer-coffee": "Buy me a coffee", "footer-author": "了解作者", "coffee-title": "Buy me a coffee", "coffee-copy": "如果这份文档帮到了你，可以扫码支持一下。", "coffee-close": "关闭", "coffee-close-label": "关闭赞助弹窗", "coffee-qr-alt": "微信收款二维码"
         },
         en: {
           pageTitle: "2HP - Double-Hop Setup Guide",
           pageDescription: "A visual reading page for the original double-hop setup Markdown, preserving the source content and adding one traffic-link architecture diagram.",
           "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Double-Hop Setup Tutorial", "lang-toggle-label": "Switch language",
           "architecture-title": "Traffic Diagram", "architecture-copy": "This diagram shows the actual path from local Clash Verge to the first hop, the U.S. exit hop, and the target website.", "legal-note": "Follow the law. This route is built for academic research only. You are responsible for any unlawful use.", "route-label": "Double-hop path from local Clash Verge to the target website", "node-1-small": "LOCAL DEVICE", "node-1-title": "Local Clash Verge", "node-1-copy": "The local client starts rule-based proxying and sends double-hop traffic to the first hop.", "node-2-small": "FIRST HOP", "node-2-title": "First-hop node", "node-2-copy": "The Hysteria2 inbound receives local traffic and forwards it to the tail node.", "node-3-small": "US EXIT", "node-3-title": "Tail node (U.S. IP)", "node-3-copy": "This node provides the U.S. egress IP for the final visit.", "node-4-small": "TARGET SITE", "node-4-title": "Target website", "node-4-copy": "The website sees the U.S. IP of the tail node.",
-          "aux-title": "Auxiliary Entries", "aux-md": "Setup guide", "aux-desktop": "Desktop config template", "aux-android": "Android/iOS config template", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "download-md": "Download Markdown", "code-copy": "Copy", "code-copied": "Copied", "code-copy-failed": "Failed", "code-copy-label": "Copy code block", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms."
+          "aux-title": "Auxiliary Entries", "aux-md": "Setup guide", "aux-desktop": "Desktop config template", "aux-android": "Android/iOS config template", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "download-md": "Download Markdown", "code-copy": "Copy", "code-copied": "Copied", "code-copy-failed": "Failed", "code-copy-label": "Copy code block", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms.", "footer-actions-label": "Footer actions", "footer-coffee": "Buy me a coffee", "footer-author": "About the author", "coffee-title": "Buy me a coffee", "coffee-copy": "If this guide helped, scan the QR code to support the work.", "coffee-close": "Close", "coffee-close-label": "Close support popup", "coffee-qr-alt": "WeChat payment QR code"
         }
       };
       const storageKey = "2hp-language";
@@ -1275,6 +1368,33 @@ rules:
         currentLanguage = currentLanguage === "zh" ? "en" : "zh";
         writeStoredLanguage(currentLanguage);
         applyLanguage(currentLanguage);
+      });
+
+      const coffeeModal = document.querySelector("[data-coffee-modal]");
+      const openCoffeeButton = document.querySelector("[data-coffee-open]");
+      const closeCoffeeButton = document.querySelector("[data-coffee-close]");
+      let coffeeReturnFocus = null;
+      const closeCoffeeModal = () => {
+        if (!coffeeModal || coffeeModal.hidden) return;
+        coffeeModal.hidden = true;
+        document.body.classList.remove("modal-open");
+        if (coffeeReturnFocus && typeof coffeeReturnFocus.focus === "function") coffeeReturnFocus.focus();
+        coffeeReturnFocus = null;
+      };
+      const openCoffeeModal = () => {
+        if (!coffeeModal) return;
+        coffeeReturnFocus = document.activeElement;
+        coffeeModal.hidden = false;
+        document.body.classList.add("modal-open");
+        closeCoffeeButton && closeCoffeeButton.focus();
+      };
+      openCoffeeButton && openCoffeeButton.addEventListener("click", openCoffeeModal);
+      closeCoffeeButton && closeCoffeeButton.addEventListener("click", closeCoffeeModal);
+      coffeeModal && coffeeModal.addEventListener("click", (event) => {
+        if (event.target === coffeeModal) closeCoffeeModal();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeCoffeeModal();
       });
 
       const docTabs = Array.from(document.querySelectorAll("[data-doc-tab]"));
