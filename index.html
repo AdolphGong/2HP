@@ -487,17 +487,22 @@
     .coffee-modal h2 { margin: 0 0 8px; color: var(--deep); font-size: 24px; line-height: 1.16; }
     .coffee-modal p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
     .coffee-close {
-      min-height: 34px;
-      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      padding: 0;
       border: 1px solid var(--line);
       border-radius: 6px;
       background: #f8fbfc;
       color: var(--deep);
-      font: inherit;
-      font-weight: 800;
       cursor: pointer;
     }
     .coffee-close:hover { background: #eef4f7; }
+    .coffee-close svg { width: 18px; height: 18px; stroke-width: 2.4; }
+    .coffee-close path { fill: none; stroke: currentColor; stroke-linecap: round; }
     .coffee-qr {
       display: block;
       width: min(280px, 100%);
@@ -1250,7 +1255,7 @@ rules:
           <h2 id="coffee-title" data-i18n="coffee-title">Buy me a coffee</h2>
           <p data-i18n="coffee-copy">如果这份文档帮到了你，可以扫码支持一下。</p>
         </div>
-        <button class="coffee-close" type="button" data-coffee-close aria-label="关闭赞助弹窗" data-i18n="coffee-close" data-i18n-attr="aria-label:coffee-close-label">关闭</button>
+        <button class="coffee-close" type="button" data-coffee-close aria-label="关闭赞助弹窗" data-i18n-attr="aria-label:coffee-close-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
       </div>
       <img class="coffee-qr" src="./%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg" alt="微信收款二维码" data-i18n-attr="alt:coffee-qr-alt">
     </div>
