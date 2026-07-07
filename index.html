@@ -587,6 +587,7 @@
               <button class="doc-tab active" type="button" role="tab" aria-selected="true" aria-controls="doc-panel-source" data-doc-tab="source" data-i18n="aux-md">搭建教程</button>
               <button class="doc-tab" type="button" role="tab" aria-selected="false" aria-controls="doc-panel-desktop" data-doc-tab="desktop" data-i18n="aux-desktop">PC客户端配置模板</button>
               <button class="doc-tab" type="button" role="tab" aria-selected="false" aria-controls="doc-panel-android" data-doc-tab="android" data-i18n="aux-android">Android/iOS移动端配置</button>
+              <button class="doc-tab" type="button" role="tab" aria-selected="false" aria-controls="doc-panel-usage" data-doc-tab="usage" data-i18n="aux-usage">使用手册</button>
             </nav>
             <section class="doc-panel active" id="doc-panel-source" data-doc-panel="source" role="tabpanel">
             <div class="doc-title-row">
@@ -623,7 +624,7 @@
 <p>端口建议随机高位，不建议用太常见的 <code>443</code>、<code>8443</code>、<code>1080</code>。随机高位端口不是安全措施本身，但能少一些无意义扫描。</p>
 <h2 id="md-9-占位符">占位符<a class="heading-anchor" href="#md-9-占位符" aria-label="链接到 占位符">#</a></h2>
 <p>后面的命令和配置里会用这些占位符，先替换成你自己的值。</p>
-<div class="table-wrap"><table><thead><tr><th>占位符</th><th>含义</th><th>示例</th></tr></thead><tbody><tr><td><code>&lt;FIRST_IP&gt;</code></td><td>第一跳 VPS 公网 IP</td><td><code>1.2.3.4</code></td></tr><tr><td><code>&lt;FIRST_PORT&gt;</code></td><td>第一跳 Hysteria2 UDP 端口</td><td><code>25000</code></td></tr><tr><td><code>&lt;HY2_PASSWORD&gt;</code></td><td>第一跳 Hysteria2 密码</td><td>随机长字符串</td></tr><tr><td><code>&lt;TLS_NAME&gt;</code></td><td>证书 CN/SNI</td><td>有域名填域名；无域名可填一个固定名称</td></tr><tr><td><code>&lt;EXIT_IP&gt;</code></td><td>第二跳 SOCKS5 地址</td><td><code>5.6.7.8</code></td></tr><tr><td><code>&lt;SOCKS_PORT&gt;</code></td><td>第二跳 SOCKS5 端口</td><td><code>30080</code></td></tr><tr><td><code>&lt;SOCKS_USER&gt;</code></td><td>第二跳 SOCKS5 账号</td><td><code>user1</code></td></tr><tr><td><code>&lt;SOCKS_PASS&gt;</code></td><td>第二跳 SOCKS5 密码</td><td>随机长字符串</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>占位符</th><th>含义</th><th>示例</th></tr></thead><tbody><tr><td><code>&lt;FIRST_IP&gt;</code></td><td>第一跳 VPS 公网 IP</td><td><code>203.0.113.10</code></td></tr><tr><td><code>&lt;FIRST_PORT&gt;</code></td><td>第一跳 Hysteria2 UDP 端口</td><td><code>25000</code></td></tr><tr><td><code>&lt;HY2_PASSWORD&gt;</code></td><td>第一跳 Hysteria2 密码</td><td>随机长字符串</td></tr><tr><td><code>&lt;TLS_NAME&gt;</code></td><td>证书 CN/SNI</td><td>有域名填域名；无域名可填一个固定名称</td></tr><tr><td><code>&lt;EXIT_IP&gt;</code></td><td>第二跳 SOCKS5 地址</td><td><code>198.51.100.20</code></td></tr><tr><td><code>&lt;SOCKS_PORT&gt;</code></td><td>第二跳 SOCKS5 端口</td><td><code>30080</code></td></tr><tr><td><code>&lt;SOCKS_USER&gt;</code></td><td>第二跳 SOCKS5 账号</td><td><code>user1</code></td></tr><tr><td><code>&lt;SOCKS_PASS&gt;</code></td><td>第二跳 SOCKS5 密码</td><td>随机长字符串</td></tr></tbody></table></div>
 <p>生成密码可以用：</p>
 <figure class="code-block"><figcaption>bash</figcaption><pre><code>openssl rand -base64 24</code></pre></figure>
 <h2 id="md-10-第一步：安装-sing-box">第一步：安装 sing-box<a class="heading-anchor" href="#md-10-第一步：安装-sing-box" aria-label="链接到 第一步：安装 sing-box">#</a></h2>
@@ -1014,6 +1015,34 @@ rules:
 <h2 id="md-21-下载文档给你正在用的ai，买好服务器，让ai帮你搭建！！！">下载文档给你正在用的AI，买好服务器，让AI帮你搭建！！！<a class="heading-anchor" href="#md-21-下载文档给你正在用的ai，买好服务器，让ai帮你搭建！！！" aria-label="链接到 下载文档给你正在用的AI，买好服务器，让AI帮你搭建！！！">#</a></h2>
             <div class="doc-download-bottom"><a class="doc-download-button" href="./%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E6%90%AD%E5%BB%BA%E5%88%86%E4%BA%AB%E6%96%87%E6%A1%A3.md" download="双跳链路搭建分享文档.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a></div>
             </section>
+            <section class="doc-panel" id="doc-panel-usage" data-doc-panel="usage" role="tabpanel" hidden>
+              <div class="doc-title-row">
+                <div class="doc-title-main">
+                  <h1 data-i18n="aux-usage">使用手册</h1>
+                </div>
+                <a class="doc-download-button" href="./%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md" download="双跳链路使用手册.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a>
+              </div>
+              <p>这是一份脱敏后的日常使用手册，只描述操作流程和排障思路，不包含真实服务器 IP、SSH 用户、系统密码、代理账号密码、机器名或本地私有路径。</p>
+              <h2>使用前确认</h2>
+              <ul><li>遵守所在地法律法规、云服务商政策和目标服务条款。</li><li>只把这条链路用于合法的学术研究、开发测试和稳定访问场景。</li><li>不要把真实节点信息、账号密码或可直接导入的个人配置发到公开仓库、聊天群或截图里。</li></ul>
+              <h2>文档关系</h2>
+              <div class="table-wrap"><table><thead><tr><th>文档</th><th>用途</th></tr></thead><tbody><tr><td><code>双跳链路搭建分享文档.md</code></td><td>从零搭建服务端和基础链路。</td></tr><tr><td><code>PC客户端配置模板.md</code></td><td>PC 端 Clash Verge / Mihomo 导入模板。</td></tr><tr><td><code>Android-iOS配置模板.md</code></td><td>Android / iOS 移动端导入模板。</td></tr><tr><td><code>双跳链路使用手册.md</code></td><td>搭好之后的日常使用、验证和排障。</td></tr></tbody></table></div>
+              <h2>日常使用流程</h2>
+              <ol><li>确认第一跳 VPS 和尾段节点都处于可用状态。</li><li>打开 Clash Verge、Mihomo 或移动端兼容客户端。</li><li>导入对应模板，并替换 <code>&lt;FIRST_IP&gt;</code>、<code>&lt;FIRST_PORT&gt;</code>、<code>&lt;HY2_PASSWORD&gt;</code>、<code>&lt;TLS_NAME&gt;</code> 等占位符。</li><li>选择 <code>Rule</code> 模式，让目标流量进入双跳链路。</li><li>用响应头、客户端日志和第一跳日志确认目标流量确实进入预期路径。</li></ol>
+              <h2>验证链路</h2>
+              <p>在 PC 端可以先用本地 HTTP 代理端口检查外部访问是否正常：</p>
+              <figure class="code-block"><figcaption>powershell</figcaption><pre><code>curl.exe -x http://127.0.0.1:7897 https://www.cloudflare.com/cdn-cgi/trace --max-time 10</code></pre></figure>
+              <p>再测试目标站点是否能通过代理访问：</p>
+              <figure class="code-block"><figcaption>powershell</figcaption><pre><code>curl.exe -x http://127.0.0.1:7897 https://example.com -I --max-time 10</code></pre></figure>
+              <h2>排障清单</h2>
+              <h3>客户端连不上第一跳</h3>
+              <ul><li>检查 <code>&lt;FIRST_IP&gt;</code>、<code>&lt;FIRST_PORT&gt;</code>、<code>&lt;HY2_PASSWORD&gt;</code>、<code>&lt;TLS_NAME&gt;</code> 是否一致。</li><li>检查 VPS 安全组和系统防火墙是否放行 UDP <code>&lt;FIRST_PORT&gt;</code>。</li><li>检查第一跳服务是否正常运行。</li></ul>
+              <h3>第一跳能连，但目标流量没有走尾段</h3>
+              <ul><li>检查第一跳路由规则里的 <code>domain_suffix</code>、<code>domain_keyword</code> 是否覆盖目标域名。</li><li>检查尾段 SOCKS5 地址、端口、账号和密码。</li><li>检查客户端代理组里是否误放了 <code>DIRECT</code>。</li></ul>
+              <h2>公开分享边界</h2>
+              <p>可以公开流程、模板、占位符、排障方法和通用命令。不要公开真实公网 IP、服务器登录方式、系统用户、系统密码、代理账号密码、个人域名、机器名、云厂商实例信息和本地可直接导入的完整配置。</p>
+              <div class="doc-download-bottom"><a class="doc-download-button" href="./%E5%8F%8C%E8%B7%B3%E9%93%BE%E8%B7%AF%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md" download="双跳链路使用手册.md"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span data-i18n="download-md">下载 Markdown</span></a></div>
+            </section>
             <section class="doc-panel" id="doc-panel-desktop" data-doc-panel="desktop" role="tabpanel" hidden>
               <div class="doc-title-row">
                 <div class="doc-title-main">
@@ -1269,14 +1298,14 @@ rules:
           pageDescription: "双跳链路搭建分享文档的原文可视化阅读页，保留 Markdown 原始内容，并配一张流量链路架构图。",
           "skip": "跳到正文", "nav-label": "主导航", "brand-label": "2HP 文档首页", "brand": "双跳链路搭建教程", "lang-toggle-label": "切换语言",
           "architecture-title": "流量链路图", "architecture-copy": "这张图展示本机 Clash Verge、首段节点、美国尾段节点和目标网站之间的实际访问路径。", "legal-note": "遵纪守法，此链路专为学术研究搭建，若用做其它非法用途，后果自负！！！", "route-label": "本机 Clash Verge 到目标网站的双跳链路图", "node-1-small": "LOCAL DEVICE", "node-1-title": "本机 Clash Verge", "node-1-copy": "本机客户端发起规则代理，把需要双跳的流量送入首段节点。", "node-2-small": "FIRST HOP", "node-2-title": "首段节点", "node-2-copy": "Hysteria2 入站承接本机流量，并继续转发到尾段节点。", "node-3-small": "US EXIT", "node-3-title": "尾段节点（美国 IP）", "node-3-copy": "作为美国出口 IP，负责最终落地访问。", "node-4-small": "TARGET SITE", "node-4-title": "目标网站", "node-4-copy": "目标网站只看到尾段节点的美国 IP。",
-          "aux-title": "辅助入口", "aux-md": "搭建教程", "aux-desktop": "PC客户端配置模板", "aux-android": "Android/iOS移动端配置", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "download-md": "下载 Markdown", "code-copy": "复制", "code-copied": "已复制", "code-copy-failed": "复制失败", "code-copy-label": "复制代码块", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。", "footer-actions-label": "页脚操作", "footer-coffee": "Buy me a coffee", "footer-author": "了解作者", "coffee-title": "Buy me a coffee", "coffee-copy": "如果这份文档帮到了你，可以扫码支持一下。", "coffee-close": "关闭", "coffee-close-label": "关闭赞助弹窗", "coffee-qr-alt": "微信收款二维码"
+          "aux-title": "辅助入口", "aux-md": "搭建教程", "aux-desktop": "PC客户端配置模板", "aux-android": "Android/iOS移动端配置", "aux-usage": "使用手册", "desktop-template-copy": "导入前替换所有 <PLACEHOLDER>，再放进 Clash Verge / Mihomo。", "android-template-copy": "导入前替换所有 <PLACEHOLDER>，适用于 Clash / Mihomo Android，也可作为 iOS 客户端的基础模板。", "download-md": "下载 Markdown", "code-copy": "复制", "code-copied": "已复制", "code-copy-failed": "复制失败", "code-copy-label": "复制代码块", "footer-left": "2HP - 双跳链路搭建分享文档", "footer-right": "请负责任使用，并遵守所在地法律、服务商政策和平台条款。", "footer-actions-label": "页脚操作", "footer-coffee": "Buy me a coffee", "footer-author": "了解作者", "coffee-title": "Buy me a coffee", "coffee-copy": "如果这份文档帮到了你，可以扫码支持一下。", "coffee-close": "关闭", "coffee-close-label": "关闭赞助弹窗", "coffee-qr-alt": "微信收款二维码"
         },
         en: {
           pageTitle: "2HP - Double-Hop Setup Guide",
           pageDescription: "A visual reading page for the original double-hop setup Markdown, preserving the source content and adding one traffic-link architecture diagram.",
           "skip": "Skip to content", "nav-label": "Primary", "brand-label": "2HP document home", "brand": "Double-Hop Setup Tutorial", "lang-toggle-label": "Switch language",
           "architecture-title": "Traffic Diagram", "architecture-copy": "This diagram shows the actual path from local Clash Verge to the first hop, the U.S. exit hop, and the target website.", "legal-note": "Follow the law. This route is built for academic research only. You are responsible for any unlawful use.", "route-label": "Double-hop path from local Clash Verge to the target website", "node-1-small": "LOCAL DEVICE", "node-1-title": "Local Clash Verge", "node-1-copy": "The local client starts rule-based proxying and sends double-hop traffic to the first hop.", "node-2-small": "FIRST HOP", "node-2-title": "First-hop node", "node-2-copy": "The Hysteria2 inbound receives local traffic and forwards it to the tail node.", "node-3-small": "US EXIT", "node-3-title": "Tail node (U.S. IP)", "node-3-copy": "This node provides the U.S. egress IP for the final visit.", "node-4-small": "TARGET SITE", "node-4-title": "Target website", "node-4-copy": "The website sees the U.S. IP of the tail node.",
-          "aux-title": "Auxiliary Entries", "aux-md": "Setup guide", "aux-desktop": "PC client config template", "aux-android": "Android/iOS mobile config", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "download-md": "Download Markdown", "code-copy": "Copy", "code-copied": "Copied", "code-copy-failed": "Failed", "code-copy-label": "Copy code block", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms.", "footer-actions-label": "Footer actions", "footer-coffee": "Buy me a coffee", "footer-author": "About the author", "coffee-title": "Buy me a coffee", "coffee-copy": "If this guide helped, scan the QR code to support the work.", "coffee-close": "Close", "coffee-close-label": "Close support popup", "coffee-qr-alt": "WeChat payment QR code"
+          "aux-title": "Auxiliary Entries", "aux-md": "Setup guide", "aux-desktop": "PC client config template", "aux-android": "Android/iOS mobile config", "aux-usage": "Usage guide", "desktop-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash Verge or Mihomo.", "android-template-copy": "Replace every <PLACEHOLDER> before importing it into Clash/Mihomo Android; it can also serve as a base for iOS clients.", "download-md": "Download Markdown", "code-copy": "Copy", "code-copied": "Copied", "code-copy-failed": "Failed", "code-copy-label": "Copy code block", "footer-left": "2HP - Double-Hop Setup Guide", "footer-right": "Use responsibly and follow local laws, provider policies, and service terms.", "footer-actions-label": "Footer actions", "footer-coffee": "Buy me a coffee", "footer-author": "About the author", "coffee-title": "Buy me a coffee", "coffee-copy": "If this guide helped, scan the QR code to support the work.", "coffee-close": "Close", "coffee-close-label": "Close support popup", "coffee-qr-alt": "WeChat payment QR code"
         }
       };
       const storageKey = "2hp-language";
@@ -1424,7 +1453,8 @@ rules:
       docTabs.forEach((tab) => {
         tab.addEventListener("click", () => activateDocPanel(tab.dataset.docTab));
       });
-      const initialDoc = window.location.hash === "#doc-panel-desktop" ? "desktop" : window.location.hash === "#doc-panel-android" ? "android" : "source";
+      const hashDoc = window.location.hash.startsWith("#doc-panel-") ? window.location.hash.replace("#doc-panel-", "") : "source";
+      const initialDoc = docPanels.some((panel) => panel.dataset.docPanel === hashDoc) ? hashDoc : "source";
       activateDocPanel(initialDoc, false);
     })();
   </script>

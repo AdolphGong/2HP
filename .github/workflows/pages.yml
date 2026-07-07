@@ -32,7 +32,8 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html LICENSE .nojekyll _site/
-          cp *.md _site/
+          cp README.md _site/
+          cp "双跳链路搭建分享文档.md" "双跳链路使用手册.md" "桌面配置模板.md" "Android-iOS配置模板.md" _site/
           find . -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.gif' -o -iname '*.svg' \) -exec cp {} _site/ \;
           cp -R examples _site/
 
